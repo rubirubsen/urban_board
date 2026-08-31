@@ -31,6 +31,40 @@ interface HeaderProps {
   activeMarkerCount: number;
 }
 
+// Mini Federal State Flag for Niedersachsen (Schwarz-Rot-Gold with white Saxon Steed)
+const NiedersachsenFlag: React.FC<{ className?: string }> = ({ className = 'w-4 h-2.5' }) => (
+  <svg viewBox="0 0 30 20" className={`shrink-0 rounded-[2px] overflow-hidden shadow-xs border border-anthrazit-700/60 ${className}`} aria-hidden="true">
+    <rect width="30" height="6.67" fill="#000000" />
+    <rect y="6.67" width="30" height="6.67" fill="#DD0000" />
+    <rect y="13.34" width="30" height="6.67" fill="#FFCE00" />
+    <g transform="translate(10, 4) scale(0.65)">
+      <path d="M0,0 L15.3,0 L15.3,10 C15.3,14 7.65,18 7.65,18 C7.65,18 0,14 0,10 Z" fill="#D00000" stroke="#FFFFFF" strokeWidth="0.8" />
+      <path d="M4 11 C4 11, 4.5 9, 6 8.5 C7 8.2, 8.5 7.5, 9.5 5.5 C9.8 4.8, 10.5 4.5, 11 4.5 C11.5 4.5, 11.5 5.2, 11 5.8 C10.5 6.5, 10 7.5, 10.5 8 C11.5 9, 12.5 8.5, 13 8.5 C12 10, 10.5 11, 9 11.5 C7.5 12, 6 12.5, 5 13.5 C4.8 13.7, 4.2 13.5, 4.5 12.5 C4.8 11.8, 4 11, 4 11 Z" fill="#FFFFFF" />
+    </g>
+  </svg>
+);
+
+// Mini Federal State Flag for Hamburg (Red banner with iconic white 3-tower castle)
+const HamburgFlag: React.FC<{ className?: string }> = ({ className = 'w-4 h-2.5' }) => (
+  <svg viewBox="0 0 30 20" className={`shrink-0 rounded-[2px] overflow-hidden shadow-xs border border-anthrazit-700/60 ${className}`} aria-hidden="true">
+    <rect width="30" height="20" fill="#D00000" />
+    <g fill="#FFFFFF" transform="translate(6.5, 2.5) scale(0.85)">
+      <path d="M1,14 L19,14 L19,17 L1,17 Z" />
+      <path d="M2,8 L18,8 L18,14 L2,14 Z" />
+      <path d="M7,11 C7,9.5 8.5,8.5 10,8.5 C11.5,8.5 13,9.5 13,11 L13,14 L7,14 Z" fill="#D00000" />
+      <path d="M8.5,2 L11.5,2 L11.5,8 L8.5,8 Z" />
+      <path d="M7.5,2 C7.5,0.8 10,-0.2 10,-0.2 C10,-0.2 12.5,0.8 12.5,2 Z" />
+      <path d="M9.5,-1.5 L10.5,-1.5 M10,-2.2 L10,-0.8" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+      <path d="M2.5,4 L6,4 L6,8 L2.5,8 Z" />
+      <path d="M2,2.5 L3,2.5 L3,4 L4,4 L4,2.5 L5,2.5 L5,4 L6.5,4 L6.5,2.5 L2,2.5 Z" />
+      <circle cx="4.25" cy="0.5" r="0.8" fill="#FFFFFF" />
+      <path d="M14,4 L17.5,4 L17.5,8 L14,8 Z" />
+      <path d="M13.5,2.5 L15,2.5 L15,4 L16,4 L16,2.5 L17,2.5 L17,4 L18,4 L18,2.5 L13.5,2.5 Z" />
+      <circle cx="15.75" cy="0.5" r="0.8" fill="#FFFFFF" />
+    </g>
+  </svg>
+);
+
 export const Header: React.FC<HeaderProps> = ({
   theme,
   onToggleTheme,
@@ -69,8 +103,8 @@ export const Header: React.FC<HeaderProps> = ({
   const cityCoords = activeCity === 'HH' ? '53.5511°N 9.9937°E' : '52.3759°N 9.7320°E';
 
   return (
-    <header className="h-14 border-b border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 backdrop-blur-md px-4 flex items-center justify-between z-30 select-none">
-      {/* Brand & City Indicator with HH Knopf */}
+    <header className="h-14 border-b border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between z-30 select-none">
+      {/* Brand & City Indicator with Stylish Flag Buttons */}
       <div className="flex items-center space-x-2 sm:space-x-3">
         {onToggleMobileSidebar && (
           <button
@@ -89,30 +123,32 @@ export const Header: React.FC<HeaderProps> = ({
             HBOARD
           </span>
 
-          {/* Quick City Switcher Buttons (H & HH Knopf) */}
-          <div className="flex items-center rounded bg-anthrazit-950 border border-anthrazit-800 p-0.5 space-x-0.5">
+          {/* Tactical Flag-Enhanced City Switcher */}
+          <div className="flex items-center rounded-lg bg-anthrazit-950/90 border border-anthrazit-800 p-0.5 space-x-0.5 shadow-inner">
             <button
               onClick={() => onSelectCity('H')}
-              className={`px-2 py-1 rounded text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+              className={`px-2 py-1 rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
                 activeCity === 'H'
-                  ? 'bg-accent text-anthrazit-950 shadow-sm'
-                  : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850'
+                  ? 'bg-accent text-anthrazit-950 shadow-sm border border-accent/60'
+                  : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850/80 border border-transparent'
               }`}
-              title="Hannover (H) aktivieren"
+              title="Sektor Hannover (Niedersachsen) aktivieren"
             >
+              <NiedersachsenFlag className="w-4 h-2.5" />
               <span>H</span>
               <span className="hidden md:inline text-[10px] font-medium opacity-90">Hannover</span>
             </button>
 
             <button
               onClick={() => onSelectCity('HH')}
-              className={`px-2 py-1 rounded text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+              className={`px-2 py-1 rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
                 activeCity === 'HH'
-                  ? 'bg-accent text-anthrazit-950 shadow-sm'
-                  : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850'
+                  ? 'bg-accent text-anthrazit-950 shadow-sm border border-accent/60'
+                  : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850/80 border border-transparent'
               }`}
-              title="Hamburg (HH) aktivieren"
+              title="Sektor Hamburg (Freie und Hansestadt Hamburg) aktivieren"
             >
+              <HamburgFlag className="w-4 h-2.5" />
               <span>HH</span>
               <span className="hidden md:inline text-[10px] font-medium opacity-90">Hamburg</span>
             </button>
