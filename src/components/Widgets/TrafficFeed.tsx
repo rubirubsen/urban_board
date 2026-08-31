@@ -228,12 +228,12 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
     : ['1', '3', '4', '5', '6', '10', 'S4'];
 
   return (
-    <div className="space-y-4 text-xs font-mono select-none w-full max-w-full overflow-x-hidden">
+    <div className="space-y-4 text-xs font-mono select-none w-full max-w-full">
       {/* Sub-Tab Selector */}
       <div className="flex rounded bg-anthrazit-950 p-1 border border-anthrazit-800">
         <button
           onClick={() => setActiveSubTab('oepnv')}
-          className={`flex-1 py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 min-h-[44px] py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
             activeSubTab === 'oepnv'
               ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
               : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -245,7 +245,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
 
         <button
           onClick={() => setActiveSubTab('vmz')}
-          className={`flex-1 py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 min-h-[44px] py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
             activeSubTab === 'vmz'
               ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
               : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -261,7 +261,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
         <div className="space-y-3">
           {/* Linienverlauf Schnellwahl-Bar */}
           <div className="p-2.5 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-1.5">
-            <div className="flex items-center justify-between text-[10px] text-anthrazit-400">
+            <div className="flex items-center justify-between text-xs text-anthrazit-400">
               <span className="uppercase font-bold flex items-center space-x-1">
                 <Route className="w-3 h-3 text-accent" />
                 <span>Exakte OSM-Linienführung ({activeCity === 'HH' ? 'HVV' : 'ÜSTRA'}):</span>
@@ -269,12 +269,12 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
               {activeRoute ? (
                 <button
                   onClick={() => onSelectRoute?.(null)}
-                  className="text-accent hover:underline text-[9px] cursor-pointer font-bold"
+                  className="text-accent hover:underline text-xs cursor-pointer font-bold min-h-[44px] inline-flex items-center justify-center px-2"
                 >
                   Ausblenden
                 </button>
               ) : loadingRoute ? (
-                <span className="text-accent text-[9px] flex items-center space-x-1">
+                <span className="text-accent text-xs flex items-center space-x-1">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   <span>Lade OSM Track...</span>
                 </span>
@@ -289,7 +289,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                   <button
                     key={ref}
                     onClick={() => handleToggleLineRoute(ref)}
-                    className={`px-2 py-1 rounded text-[10px] font-mono font-bold transition-all cursor-pointer border ${
+                    className={`px-2 py-1 min-h-[44px] min-w-[44px] rounded text-xs font-mono font-bold transition-all cursor-pointer border flex items-center justify-center ${
                       isActive
                         ? 'bg-accent text-anthrazit-950 border-accent shadow-accent-sm'
                         : 'bg-anthrazit-950 border-anthrazit-700 text-anthrazit-300 hover:border-accent hover:text-accent'
@@ -305,14 +305,14 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
           {/* Search & Station Selector Bar */}
           <div className="p-3 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase font-bold text-anthrazit-400">
+              <span className="text-xs uppercase font-bold text-anthrazit-400">
                 Haltestelle suchen & merken
               </span>
               {activeStation && (
                 <button
                   onClick={() => loadDepartures(activeStation)}
                   disabled={loadingDepartures}
-                  className="flex items-center space-x-1 text-[10px] text-accent hover:underline cursor-pointer"
+                  className="flex items-center justify-center space-x-1 text-xs text-accent hover:underline cursor-pointer min-h-[44px] px-2"
                   title="Echtzeit-Abfahrten neu laden"
                 >
                   <RefreshCw className={`w-3 h-3 ${loadingDepartures ? 'animate-spin' : ''}`} />
@@ -323,7 +323,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
 
             {/* Live Search Input */}
             <div ref={searchContainerRef} className="relative">
-              <div className="flex items-center bg-anthrazit-950 border border-anthrazit-700 rounded px-2 py-1.5 focus-within:border-accent">
+              <div className="flex items-center bg-anthrazit-950 border border-anthrazit-700 rounded px-2 py-1.5 focus-within:border-accent min-h-[44px]">
                 <Search className="w-3.5 h-3.5 text-anthrazit-400 mr-2 shrink-0" />
                 <input
                   type="text"
@@ -342,7 +342,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                       setSearchQuery('');
                       setSearchResults([]);
                     }}
-                    className="p-0.5 text-anthrazit-400 hover:text-anthrazit-200"
+                    className="p-2.5 min-h-[44px] min-w-[44px] text-anthrazit-400 hover:text-anthrazit-200 flex items-center justify-center"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -352,7 +352,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
 
               {/* Search Results Dropdown */}
               {isSearchOpen && searchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 z-30 max-h-56 overflow-y-auto rounded bg-anthrazit-900 border border-anthrazit-700 shadow-2xl p-1 space-y-1">
+                <div className="absolute top-full left-0 right-0 mt-1 z-30 max-h-56 overflow-y-auto overscroll-contain rounded bg-anthrazit-900 border border-anthrazit-700 shadow-2xl p-1 space-y-1">
                   {searchResults.map((stop) => {
                     const isPinned = pinnedStops.some(
                       s => s.id === stop.id || s.name.trim().toLowerCase() === stop.name.trim().toLowerCase()
@@ -360,18 +360,18 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                     return (
                       <div
                         key={stop.id}
-                        className="flex items-center justify-between p-2 rounded hover:bg-anthrazit-850 cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-2 rounded hover:bg-anthrazit-850 cursor-pointer transition-colors min-h-[44px]"
                       >
                         <div
                           onClick={() => handleSelectStation(stop)}
-                          className="flex items-center space-x-2 flex-1 min-w-0"
+                          className="flex items-center space-x-2 flex-1 min-w-0 min-h-[44px]"
                         >
                           <MapPin className="w-3.5 h-3.5 text-accent shrink-0" />
                           <div className="truncate">
                             <span className="font-bold text-anthrazit-100 block text-xs truncate">
                               {stop.name}
                             </span>
-                            <span className="text-[10px] text-anthrazit-500">{stop.type || 'ÖPNV'}</span>
+                            <span className="text-xs text-anthrazit-500">{stop.type || 'ÖPNV'}</span>
                           </div>
                         </div>
 
@@ -380,7 +380,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                             e.stopPropagation();
                             togglePin(stop);
                           }}
-                          className={`p-1.5 rounded hover:bg-anthrazit-800 transition-colors ${
+                          className={`p-1.5 rounded hover:bg-anthrazit-800 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
                             isPinned ? 'text-accent' : 'text-anthrazit-500 hover:text-anthrazit-300'
                           }`}
                           title={isPinned ? 'Aus Favoriten entfernen' : 'Haltestelle pinnen'}
@@ -396,13 +396,13 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
 
             {/* Pinned Quick-Select Buttons */}
             <div>
-              <div className="text-[9px] uppercase font-bold text-anthrazit-500 mb-1.5 flex items-center justify-between">
+              <div className="text-xs uppercase font-bold text-anthrazit-500 mb-1.5 flex items-center justify-between">
                 <span>Gepinnte Favoriten ({pinnedStops.length})</span>
-                <span className="text-[9px] text-anthrazit-400 lowercase">Klick = Abfahrten laden</span>
+                <span className="text-xs text-anthrazit-400 lowercase">Klick = Abfahrten laden</span>
               </div>
 
               {pinnedStops.length === 0 ? (
-                <div className="p-2 rounded bg-anthrazit-950 border border-anthrazit-800 text-[10px] text-anthrazit-500 text-center">
+                <div className="p-2 rounded bg-anthrazit-950 border border-anthrazit-800 text-xs text-anthrazit-500 text-center">
                   Keine Haltestellen angepinnt.
                 </div>
               ) : (
@@ -416,7 +416,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                       <div
                         key={stop.id}
                         onClick={() => handleSelectStation(stop)}
-                        className={`group px-2 py-1.5 rounded text-[11px] flex items-center justify-between transition-colors cursor-pointer border ${
+                        className={`group px-2 py-1.5 rounded text-xs flex items-center justify-between transition-colors cursor-pointer border min-h-[44px] ${
                           isSelected
                             ? 'bg-accent/15 border-accent text-accent font-bold shadow-accent-sm'
                             : 'bg-anthrazit-950 border-anthrazit-800 text-anthrazit-300 hover:border-anthrazit-700'
@@ -428,7 +428,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                             e.stopPropagation();
                             togglePin(stop);
                           }}
-                          className="p-0.5 text-anthrazit-500 hover:text-red-400 transition-colors cursor-pointer"
+                          className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center text-anthrazit-500 hover:text-red-400 transition-colors cursor-pointer"
                           title="Aus Favoriten entfernen"
                         >
                           <PinOff className="w-3 h-3" />
@@ -442,7 +442,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
 
             {/* Active Station Header Info */}
             {activeStation && (
-              <div className="pt-2 border-t border-anthrazit-800/70 flex items-center justify-between text-[11px]">
+              <div className="pt-2 border-t border-anthrazit-800/70 flex items-center justify-between text-xs">
                 <div className="flex items-center space-x-1.5 min-w-0 pr-1">
                   <span className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0"></span>
                   <span className="font-bold text-anthrazit-100 truncate">{activeStation.name}</span>
@@ -450,7 +450,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                 <div className="flex items-center space-x-1.5 shrink-0">
                   <button
                     onClick={() => togglePin(activeStation)}
-                    className={`flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] border transition-colors cursor-pointer ${
+                    className={`flex items-center space-x-1 px-2 py-0.5 min-h-[44px] rounded text-xs border transition-colors cursor-pointer ${
                       isCurrentActivePinned
                         ? 'bg-accent text-anthrazit-950 border-accent font-bold shadow-sm'
                         : 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-300 hover:text-accent hover:border-accent'
@@ -462,7 +462,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                   </button>
                   <button
                     onClick={handleClearStation}
-                    className="p-1 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-100 cursor-pointer"
+                    className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-100 cursor-pointer"
                     title="Haltestellen-Auswahl aufheben"
                   >
                     <X className="w-3 h-3" />
@@ -476,10 +476,10 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
           {activeStation ? (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between px-1">
-                <span className="text-[10px] uppercase font-bold text-anthrazit-400">
+                <span className="text-xs uppercase font-bold text-anthrazit-400">
                   Echtzeit-Abfahrten ({departures.length})
                 </span>
-                <span className="text-[10px] text-accent font-mono">Klick auf Zeile = OSM-Track</span>
+                <span className="text-xs text-accent font-mono">Klick auf Zeile = OSM-Track</span>
               </div>
 
               {loadingDepartures && departures.length === 0 ? (
@@ -492,7 +492,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                   <span className="text-xs">Keine aktuellen Abfahrten für {activeStation.name} gefunden.</span>
                 </div>
               ) : (
-                <div className="space-y-1.5 max-h-96 overflow-y-auto pr-0.5">
+                <div className="space-y-1.5 max-h-96 overflow-y-auto overscroll-contain pr-0.5">
                   {departures.map((dep, idx) => {
                     const isDelayed = dep.delayMinutes > 0;
                     const isCancelled = dep.cancelled;
@@ -501,12 +501,12 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                       <div
                         key={dep.tripId + idx}
                         onClick={() => handleToggleLineRoute(dep.line)}
-                        className="p-2.5 rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-accent/60 transition-colors flex items-center justify-between cursor-pointer group"
+                        className="p-2.5 min-h-[64px] rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-accent/60 transition-colors flex items-center justify-between cursor-pointer group"
                         title="Klicken, um OpenStreetMap Linienführung auf der Karte anzuzeigen"
                       >
                         <div className="flex items-center space-x-2.5 min-w-0">
                           {/* Line Badge */}
-                          <span className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] shrink-0 group-hover:scale-105 transition-transform ${
+                          <span className={`px-2 py-0.5 rounded font-mono font-bold text-xs shrink-0 group-hover:scale-105 transition-transform ${
                             dep.line.includes('Stadtbahn') || dep.type === 'subway'
                               ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40'
                               : dep.line.includes('S-Bahn') || dep.type === 'regional'
@@ -517,11 +517,11 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                           </span>
 
                           <div className="min-w-0">
-                            <span className="font-bold text-anthrazit-100 truncate block text-[11px]">
+                            <span className="font-bold text-anthrazit-100 truncate block text-xs">
                               {dep.direction}
                             </span>
                             {dep.platform && (
-                              <span className="text-[10px] text-anthrazit-500 font-sans">
+                              <span className="text-xs text-anthrazit-500 font-sans">
                                 {dep.platform}
                               </span>
                             )}
@@ -534,15 +534,15 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                             {dep.when}
                           </div>
                           {isCancelled ? (
-                            <span className="text-[9px] px-1 py-0.2 rounded bg-red-500/20 text-red-400 font-bold">
+                            <span className="text-xs px-1 py-0.5 rounded bg-red-500/20 text-red-400 font-bold">
                               FÄLLT AUS
                             </span>
                           ) : isDelayed ? (
-                            <span className="text-[10px] text-accent font-bold">
+                            <span className="text-xs text-accent font-bold">
                               +{dep.delayMinutes} Min.
                             </span>
                           ) : (
-                            <span className="text-[10px] text-emerald-400 font-semibold">
+                            <span className="text-xs text-emerald-400 font-semibold">
                               Pünktlich
                             </span>
                           )}
@@ -559,7 +559,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                 <Train className="w-4 h-4" />
               </div>
               <div className="font-bold text-xs text-anthrazit-100">Keine Haltestelle ausgewählt</div>
-              <p className="text-[11px] font-sans text-anthrazit-400 leading-relaxed max-w-xs mx-auto">
+              <p className="text-xs font-sans text-anthrazit-400 leading-relaxed max-w-xs mx-auto">
                 Klicke auf der Linie oder der Karte auf eine Haltestelle, um minutengenaue Echtzeit-Abfahrten für {activeCity === 'HH' ? 'Hamburg (HVV)' : 'Hannover (GVH)'} abzurufen.
               </p>
             </div>
@@ -572,25 +572,25 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
         <div className="space-y-3">
           <div className="p-3 rounded bg-anthrazit-900 border border-anthrazit-800">
             <div className="flex items-center justify-between mb-1">
-              <span className="font-bold text-[11px] text-anthrazit-200 uppercase">VMZ Niedersachsen Lage</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold">
+              <span className="font-bold text-xs text-anthrazit-200 uppercase">VMZ Niedersachsen Lage</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold">
                 ONLINE
               </span>
             </div>
-            <p className="text-[11px] font-sans text-anthrazit-400 leading-snug">
+            <p className="text-xs font-sans text-anthrazit-400 leading-snug">
               Echtzeitmeldungen der Verkehrsmanagementzentrale für Autobahnen (A2, A7) und Schnellwege (B3, B6, B65) in Hannover.
             </p>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] uppercase font-bold text-anthrazit-400">Aktuelle Störungen</span>
+              <span className="text-xs uppercase font-bold text-anthrazit-400">Aktuelle Störungen</span>
               <div className="flex space-x-1">
                 {['all', 'Stau', 'Baustelle'].map((t) => (
                   <button
                     key={t}
                     onClick={() => setFilterType(t)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] uppercase cursor-pointer ${
+                    className={`px-2 py-1 min-h-[44px] rounded text-xs uppercase cursor-pointer flex items-center justify-center ${
                       filterType === t
                         ? 'bg-accent text-anthrazit-950 font-bold'
                         : 'bg-anthrazit-850 text-anthrazit-400 hover:text-anthrazit-200'
@@ -602,7 +602,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
               </div>
             </div>
 
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="space-y-2 max-h-64 overflow-y-auto overscroll-contain">
               {(autobahnWarnings.length > 0 ? autobahnWarnings : filteredIncidents).map((inc: any) => (
                 <div
                   key={inc.id}
@@ -611,14 +611,14 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                       onSelectStationOnMap(inc.lat, inc.lng, `${inc.road}: ${inc.title}`);
                     }
                   }}
-                  className="p-2.5 rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-anthrazit-700 transition-all cursor-pointer"
+                  className="p-2.5 min-h-[64px] rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-anthrazit-700 transition-all cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center space-x-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-anthrazit-800 text-anthrazit-100 font-bold text-[10px]">
+                      <span className="px-1.5 py-0.5 rounded bg-anthrazit-800 text-anthrazit-100 font-bold text-xs">
                         {inc.road}
                       </span>
-                      <span className={`text-[10px] px-1 rounded font-bold ${
+                      <span className={`text-xs px-1 rounded font-bold ${
                         inc.type === 'Stau' 
                           ? 'bg-accent/15 text-accent border border-accent/30' 
                           : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
@@ -626,17 +626,17 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                         {inc.type}
                       </span>
                     </div>
-                    <span className="text-[10px] text-anthrazit-500 flex items-center space-x-1">
+                    <span className="text-xs text-anthrazit-500 flex items-center space-x-1">
                       <Clock className="w-3 h-3" />
                       <span>{inc.updatedAt}</span>
                     </span>
                   </div>
 
-                  <p className="text-[11px] font-sans text-anthrazit-300 leading-snug mb-2">
+                  <p className="text-xs font-sans text-anthrazit-300 leading-snug mb-2">
                     {inc.title || (Array.isArray(inc.description) ? inc.description.join(' ') : inc.location)}
                   </p>
 
-                  <div className="flex items-center justify-between text-[10px] text-anthrazit-400 border-t border-anthrazit-800/60 pt-1.5">
+                  <div className="flex items-center justify-between text-xs text-anthrazit-400 border-t border-anthrazit-800/60 pt-1.5">
                     <div className="flex items-center space-x-1">
                       <Compass className="w-3 h-3 text-anthrazit-500" />
                       <span>Quelle: Die Autobahn GmbH</span>
@@ -653,13 +653,13 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
           {/* VMZ & Autobahn GmbH Live Webcams Section */}
           <div className="space-y-2 pt-2 border-t border-anthrazit-800">
             <div className="flex items-center justify-between px-1">
-              <span className="text-[10px] uppercase font-bold text-anthrazit-400">Autobahn & VMZ Verkehrskameras (Live)</span>
-              <span className="text-[9px] text-accent font-bold">
+              <span className="text-xs uppercase font-bold text-anthrazit-400">Autobahn & VMZ Verkehrskameras (Live)</span>
+              <span className="text-xs text-accent font-bold">
                 {autobahnWebcams.length > 0 ? `${autobahnWebcams.length} Kameras online` : '3 Kameras'}
               </span>
             </div>
 
-            <div className="space-y-1.5 max-h-56 overflow-y-auto">
+            <div className="space-y-1.5 max-h-56 overflow-y-auto overscroll-contain">
               {autobahnWebcams.map((cam) => (
                 <div
                   key={cam.id}
@@ -668,7 +668,7 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                       onSelectStationOnMap(cam.lat, cam.lng, `Webcam: ${cam.title}`);
                     }
                   }}
-                  className="p-2 rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-accent flex items-center justify-between transition-colors cursor-pointer group"
+                  className="p-2 min-h-[64px] rounded bg-anthrazit-900 border border-anthrazit-800 hover:border-accent flex items-center justify-between transition-colors cursor-pointer group"
                 >
                   <div className="flex items-center space-x-2 min-w-0">
                     <span className="p-1 rounded bg-anthrazit-950 text-accent border border-anthrazit-800 group-hover:border-accent">
@@ -676,10 +676,10 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
                     </span>
                     <div className="truncate">
                       <span className="font-bold text-anthrazit-200 block text-xs truncate">{cam.title}</span>
-                      <span className="text-[10px] text-anthrazit-400">{cam.road} • {cam.subtitle || 'Autobahn GmbH'}</span>
+                      <span className="text-xs text-anthrazit-400">{cam.road} • {cam.subtitle || 'Autobahn GmbH'}</span>
                     </div>
                   </div>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent/15 text-accent font-bold shrink-0">
+                  <span className="text-xs px-1.5 py-0.5 rounded bg-accent/15 text-accent font-bold shrink-0">
                     Live Feed
                   </span>
                 </div>

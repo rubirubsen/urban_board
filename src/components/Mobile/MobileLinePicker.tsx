@@ -30,19 +30,22 @@ export const MobileLinePicker: React.FC<MobileLinePickerProps> = ({
   };
 
   return (
-    <div className="md:hidden absolute top-2.5 left-0 right-0 z-[1000] px-3 py-1 pointer-events-none">
-      <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto backdrop-blur-md bg-anthrazit-950/80 rounded-full border border-anthrazit-800/80 px-2 shadow-2xl">
+    <div 
+      className="md:hidden absolute top-2.5 left-0 right-0 z-[1000] px-3 py-1 pointer-events-none"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
+      <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-1.5 pointer-events-auto backdrop-blur-md bg-anthrazit-950/80 rounded-full border border-anthrazit-800/80 px-2.5 shadow-2xl">
         {/* Reset / All Lines Button */}
         <button
           onClick={() => onSelectLine(null)}
-          className={`shrink-0 h-7 px-2.5 rounded-full font-mono text-[11px] font-bold flex items-center space-x-1 transition-all cursor-pointer ${
+          className={`shrink-0 min-h-[44px] px-4 rounded-full font-mono text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer ${
             !selectedLineRef
               ? 'bg-accent text-anthrazit-950 shadow-sm'
               : 'bg-anthrazit-900/90 text-anthrazit-400 hover:text-anthrazit-200 border border-anthrazit-800'
           }`}
           title="Alle Linien / Filter zurücksetzen"
         >
-          {!selectedLineRef ? <Layers className="w-3 h-3" /> : <X className="w-3 h-3" />}
+          {!selectedLineRef ? <Layers className="w-4 h-4" /> : <X className="w-4 h-4" />}
           <span>Alle</span>
         </button>
 
@@ -55,7 +58,7 @@ export const MobileLinePicker: React.FC<MobileLinePickerProps> = ({
             <button
               key={line.lineRef}
               onClick={() => handleLineClick(line.lineRef)}
-              className={`shrink-0 h-7 px-2.5 rounded-full font-mono text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 border ${
+              className={`shrink-0 min-h-[44px] px-4 rounded-full font-mono text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 border ${
                 isSelected
                   ? 'bg-accent text-anthrazit-950 border-accent shadow-accent-sm scale-105'
                   : 'bg-anthrazit-900/90 text-anthrazit-300 border-anthrazit-750 hover:border-anthrazit-600 hover:text-anthrazit-100'
@@ -69,7 +72,7 @@ export const MobileLinePicker: React.FC<MobileLinePickerProps> = ({
             >
               <span>{line.lineRef}</span>
               {hasRoute && isSelected && (
-                <span className="w-1.5 h-1.5 rounded-full bg-anthrazit-950 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-anthrazit-950 animate-pulse" />
               )}
             </button>
           );

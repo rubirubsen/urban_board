@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Bookmark, Search, Database, Car, Cpu, ShieldAlert } from 'lucide-react';
 
 interface LinklistViewModalProps {
@@ -156,6 +156,17 @@ const LINKLIST_DATA: LinkCategory[] = [
 export const LinklistViewModal: React.FC<LinklistViewModalProps> = ({ isOpen, onClose, activeCity = 'H' }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const filteredCategories = LINKLIST_DATA.map((cat) => {
@@ -169,69 +180,69 @@ export const LinklistViewModal: React.FC<LinklistViewModalProps> = ({ isOpen, on
   }).filter((cat) => cat.items.length > 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-anthrazit-950/80 backdrop-blur-sm">
-      <div className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-lg bg-anthrazit-900 border border-anthrazit-700 shadow-2xl overflow-hidden font-mono">
+    <div className="fixed inset-0 z-[1200] flex items-end lg:items-center justify-center bg-anthrazit-950/80 backdrop-blur-sm p-0 lg:p-4">
+      <div className="relative z-[1201] w-full lg:max-w-3xl max-h-[90dvh] lg:max-h-[85dvh] flex flex-col rounded-t-xl lg:rounded-xl bg-anthrazit-900 border-t lg:border border-anthrazit-700 shadow-2xl overflow-hidden font-mono pb-[env(safe-area-inset-bottom)]">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-anthrazit-800 bg-anthrazit-950">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-anthrazit-800 bg-anthrazit-950 min-h-[60px]">
           <div className="flex items-center space-x-2.5">
             <Bookmark className="w-4 h-4 text-accent" />
-            <h2 className="text-sm font-bold tracking-wider text-anthrazit-100 uppercase">
-              {activeCity === 'HH' ? 'Hamburg OSINT Datenquellen & Linkliste' : 'Hannover OSINT Datenquellen & Linkliste'}
+            <h2 className="text-sm font-bold tracking-wider text-anthrazit-100 uppercase" style={{ fontSize: 'clamp(12px, 2.5vw, 14px)' }}>
+              {activeCity === 'HH' ? 'Hamburg OSINT Datenquellen' : 'Hannover OSINT Datenquellen'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-200 transition-colors cursor-pointer"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-200 transition-colors cursor-pointer -mr-2"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="p-4 border-b border-anthrazit-800 bg-anthrazit-900">
-          <div className="relative">
-            <Search className="w-4 h-4 text-anthrazit-400 absolute left-3 top-2.5" />
+          <div className="relative flex items-center">
+            <Search className="w-4 h-4 text-anthrazit-400 absolute left-3" />
             <input
               type="text"
               placeholder="Datenquellen durchsuchen (z. B. Shodan, VMZ, HIDD)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-anthrazit-950 border border-anthrazit-700 rounded text-xs text-anthrazit-100 focus:outline-none focus:border-accent"
+              className="w-full pl-9 pr-3 py-2 min-h-[44px] bg-anthrazit-950 border border-anthrazit-700 rounded text-xs text-anthrazit-100 focus:outline-none focus:border-accent"
               autoFocus
             />
           </div>
         </div>
 
         {/* Content List */}
-        <div className="p-5 overflow-y-auto space-y-6">
+        <div className="p-4 lg:p-5 overflow-y-auto overscroll-contain space-y-6">
           {filteredCategories.map((cat) => {
             const Icon = cat.icon;
             return (
-              <div key={cat.title} className="space-y-2.5">
+              <div key={cat.title} className="space-y-3">
                 <div className="flex items-center space-x-2 text-xs font-bold text-accent uppercase tracking-wider">
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4" />
                   <span>{cat.title}</span>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 gap-3">
                   {cat.items.map((item) => (
                     <a
                       key={item.title}
                       href={item.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 hover:border-accent/60 transition-all block group"
+                      className="p-4 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 hover:border-accent/60 transition-all block group"
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-anthrazit-100 group-hover:text-accent flex items-center space-x-1.5">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-bold text-anthrazit-100 group-hover:text-accent flex items-center space-x-2">
                           <span>{item.title}</span>
-                          <ExternalLink className="w-3 h-3 text-anthrazit-400 group-hover:text-accent" />
+                          <ExternalLink className="w-4 h-4 text-anthrazit-400 group-hover:text-accent" />
                         </span>
-                        <span className="text-[10px] text-anthrazit-500 truncate max-w-xs">
+                        <span className="text-xs text-anthrazit-500 truncate max-w-[120px] lg:max-w-xs">
                           {item.url}
                         </span>
                       </div>
-                      <p className="text-[11px] font-sans text-anthrazit-300 leading-normal">
+                      <p className="text-xs font-sans text-anthrazit-300 leading-relaxed">
                         {item.desc}
                       </p>
                     </a>
@@ -242,18 +253,18 @@ export const LinklistViewModal: React.FC<LinklistViewModalProps> = ({ isOpen, on
           })}
 
           {filteredCategories.length === 0 && (
-            <div className="text-center py-12 text-anthrazit-400 text-xs">
+            <div className="text-center py-12 text-anthrazit-400 text-xs min-h-[100px] flex items-center justify-center">
               Keine Quellen für &quot;{searchQuery}&quot; gefunden.
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-anthrazit-800 bg-anthrazit-950 flex items-center justify-between text-[11px] text-anthrazit-500">
-          <span>Gespeichert in linklist_hannover.md</span>
+        <div className="px-5 py-3 border-t border-anthrazit-800 bg-anthrazit-950 flex items-center justify-between text-xs text-anthrazit-500 min-h-[60px]">
+          <span>Gespeichert in linklist.md</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-anthrazit-800 hover:bg-anthrazit-700 text-anthrazit-200 rounded text-xs cursor-pointer"
+            className="px-4 py-2 min-h-[44px] bg-anthrazit-800 hover:bg-anthrazit-700 text-anthrazit-200 rounded text-xs cursor-pointer font-bold"
           >
             Schließen
           </button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Lock, 
   CheckCircle2, 
@@ -183,35 +183,46 @@ server {
     setTimeout(() => setIsNginxCopied(false), 2000);
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-anthrazit-950/85 backdrop-blur-md">
+    <div className="fixed inset-0 z-[1200] flex items-end lg:items-center justify-center bg-anthrazit-950/85 backdrop-blur-md p-0 lg:p-4">
       <div 
-        className="relative w-full max-w-4xl max-h-[90vh] bg-anthrazit-900 border border-anthrazit-700 rounded-lg shadow-2xl overflow-hidden flex flex-col font-mono text-xs"
+        className="relative z-[1201] w-full lg:max-w-4xl max-h-[90dvh] bg-anthrazit-900 border-t lg:border border-anthrazit-700 rounded-t-xl lg:rounded-xl shadow-2xl overflow-hidden flex flex-col font-mono text-xs pb-[env(safe-area-inset-bottom)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Topbar */}
-        <div className="h-12 border-b border-anthrazit-800 bg-anthrazit-950 px-4 flex items-center justify-between shrink-0">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-6 h-6 rounded bg-accent/15 border border-accent/40 text-accent flex items-center justify-center font-bold">
+        <div className="min-h-[60px] border-b border-anthrazit-800 bg-anthrazit-950 px-3 lg:px-4 flex items-center justify-between shrink-0">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded bg-accent/15 border border-accent/40 text-accent flex items-center justify-center font-bold shrink-0">
               ⚡
             </div>
             <div>
               <span className="font-bold text-anthrazit-100 uppercase tracking-wide text-xs">
-                HBOARD COMMAND & OPS CENTER
+                HBOARD COMMAND & OPS
               </span>
               <span className="text-[10px] text-anthrazit-400 block font-sans">
-                Milestones • Datasets • API Health • Vehicle Engine Roadmap
+                Milestones • Datasets • API Health • Roadmap
               </span>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 lg:space-x-2 shrink-0">
             {isAuthenticated && (
               <button
                 onClick={handleLogout}
-                className="px-2 py-1 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-200 text-[10px] cursor-pointer"
+                className="px-3 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-200 text-xs font-bold cursor-pointer"
                 title="Sitzung beenden"
               >
                 Logout
@@ -219,21 +230,21 @@ server {
             )}
             <button
               onClick={onClose}
-              className="p-1.5 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-100 transition-colors cursor-pointer"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-100 transition-colors cursor-pointer -mr-2"
               title="Schließen"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Auth Gate Screen */}
         {!isAuthenticated ? (
-          <div className="p-8 flex flex-col items-center justify-center text-center space-y-4 max-w-md mx-auto my-auto">
-            <div className="w-12 h-12 rounded-full bg-accent/15 border border-accent/40 text-accent flex items-center justify-center">
-              <Lock className="w-6 h-6" />
+          <div className="p-4 lg:p-8 flex flex-col items-center justify-center text-center space-y-5 max-w-md mx-auto my-auto h-full">
+            <div className="w-16 h-16 rounded-full bg-accent/15 border border-accent/40 text-accent flex items-center justify-center">
+              <Lock className="w-8 h-8" />
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               <h3 className="font-bold text-base text-anthrazit-100 uppercase tracking-wider">
                 Ops & Admin Authentifizierung
               </h3>
@@ -242,9 +253,9 @@ server {
               </p>
             </div>
 
-            <form onSubmit={handleLogin} className="w-full space-y-3 pt-2">
-              <div className="space-y-1 text-left">
-                <label className="text-[10px] uppercase font-bold text-anthrazit-400">
+            <form onSubmit={handleLogin} className="w-full space-y-4 pt-2">
+              <div className="space-y-2 text-left">
+                <label className="text-xs uppercase font-bold text-anthrazit-400">
                   Admin Passwort (Standard: <code className="text-accent">4dm1n</code>)
                 </label>
                 <input
@@ -256,20 +267,20 @@ server {
                   }}
                   placeholder="Passwort eingeben..."
                   autoFocus
-                  className="w-full bg-anthrazit-950 border border-anthrazit-700 focus:border-accent text-anthrazit-100 rounded px-3 py-2 text-sm focus:outline-none"
+                  className="w-full min-h-[44px] bg-anthrazit-950 border border-anthrazit-700 focus:border-accent text-anthrazit-100 rounded px-4 py-3 text-sm focus:outline-none"
                 />
               </div>
 
               {authError && (
-                <div className="text-[11px] text-red-400 bg-red-950/40 border border-red-800/60 p-2 rounded text-left flex items-center space-x-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <div className="text-xs text-red-400 bg-red-950/40 border border-red-800/60 p-3 rounded text-left flex items-center space-x-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>Ungültiges Passwort. Standard ist <code>4dm1n</code>.</span>
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-2.5 rounded bg-accent hover:bg-accent-hover text-anthrazit-950 font-bold tracking-wider uppercase transition-colors cursor-pointer"
+                className="w-full py-3 min-h-[44px] rounded bg-accent hover:bg-orange-600 text-anthrazit-950 font-bold tracking-wider uppercase transition-colors cursor-pointer"
               >
                 Entsperren
               </button>
@@ -279,30 +290,32 @@ server {
           /* Authenticated Dashboard View */
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Tab Navigation */}
-            <div className="h-10 border-b border-anthrazit-800 bg-anthrazit-950/70 px-4 flex items-center space-x-2 shrink-0">
-              {[
-                { id: 'milestones', label: '🎯 Roadmap & Milestones' },
-                { id: 'datasets', label: '📊 Datasets & Integrität' },
-                { id: 'apis', label: '🔌 API & Proxy Health' },
-                { id: 'vehicles', label: '🏎️ Fahrende Boxen (Vision)' },
-                { id: 'vps', label: '🌐 VPS & .core-now.com' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-3 py-1.5 rounded text-[11px] font-mono transition-colors cursor-pointer flex items-center space-x-1.5 ${
-                    activeTab === tab.id
-                      ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
-                      : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                </button>
-              ))}
+            <div className="overflow-x-auto overscroll-contain border-b border-anthrazit-800 bg-anthrazit-950/70 shrink-0 scrollbar-hide">
+              <div className="flex items-center px-2 py-1 min-w-max">
+                {[
+                  { id: 'milestones', label: '🎯 Roadmap' },
+                  { id: 'datasets', label: '📊 Datasets' },
+                  { id: 'apis', label: '🔌 APIs' },
+                  { id: 'vehicles', label: '🏎️ Vision' },
+                  { id: 'vps', label: '🌐 VPS' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`px-4 py-2 min-h-[44px] rounded text-xs font-mono transition-colors cursor-pointer flex items-center justify-center ${
+                      activeTab === tab.id
+                        ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
+                        : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Tab Content Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto overscroll-contain p-3 lg:p-4 space-y-4">
               {/* --- TAB 1: MILESTONES & ROADMAP --- */}
               {activeTab === 'milestones' && (
                 <div className="space-y-4">
@@ -389,7 +402,7 @@ server {
                     {!isChangingPass ? (
                       <button
                         onClick={() => setIsChangingPass(true)}
-                        className="px-3 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent font-bold text-[11px] cursor-pointer"
+                        className="px-4 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent font-bold text-xs cursor-pointer"
                       >
                         Passwort ändern
                       </button>
@@ -400,20 +413,20 @@ server {
                           value={newPass}
                           onChange={(e) => setNewPass(e.target.value)}
                           placeholder="Neues Passwort..."
-                          className="bg-anthrazit-900 border border-accent text-anthrazit-100 rounded px-2 py-1 text-xs focus:outline-none"
+                          className="bg-anthrazit-900 border border-accent text-anthrazit-100 rounded px-3 min-h-[44px] text-xs focus:outline-none"
                         />
                         <button
                           type="submit"
-                          className="px-2.5 py-1 rounded bg-accent text-anthrazit-950 font-bold text-xs cursor-pointer"
+                          className="px-4 py-2 min-h-[44px] rounded bg-accent text-anthrazit-950 font-bold text-xs cursor-pointer"
                         >
                           {changePassSuccess ? 'Gespeichert!' : 'Speichern'}
                         </button>
                         <button
                           type="button"
                           onClick={() => setIsChangingPass(false)}
-                          className="p-1 text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer"
+                          className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          <X className="w-5 h-5" />
                         </button>
                       </form>
                     )}
@@ -501,10 +514,11 @@ server {
                     </div>
                     <button
                       onClick={runApiPingTest}
-                      className="flex items-center space-x-1.5 px-3 py-1.5 rounded bg-accent hover:bg-accent-hover text-anthrazit-950 font-bold text-xs transition-colors cursor-pointer"
+                      className="flex items-center space-x-2 px-4 py-2 min-h-[44px] rounded bg-accent hover:bg-orange-600 text-anthrazit-950 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Ping Test starten</span>
+                      <RefreshCw className="w-4 h-4" />
+                      <span className="hidden sm:inline">Ping Test starten</span>
+                      <span className="sm:hidden">Ping</span>
                     </button>
                   </div>
 
@@ -610,10 +624,11 @@ server {
                     </div>
                     <button
                       onClick={copyNginxSnippet}
-                      className="flex items-center space-x-1.5 px-3 py-1.5 rounded bg-accent hover:bg-accent-hover text-anthrazit-950 font-bold text-xs transition-colors cursor-pointer"
+                      className="flex items-center space-x-2 px-4 py-2 min-h-[44px] rounded bg-accent hover:bg-orange-600 text-anthrazit-950 font-bold text-xs transition-colors cursor-pointer"
                     >
-                      {isNginxCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{isNginxCopied ? 'Kopiert!' : 'Nginx Config kopieren'}</span>
+                      {isNginxCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      <span className="hidden sm:inline">{isNginxCopied ? 'Kopiert!' : 'Nginx Config kopieren'}</span>
+                      <span className="sm:hidden">{isNginxCopied ? 'Kopiert!' : 'Kopieren'}</span>
                     </button>
                   </div>
 

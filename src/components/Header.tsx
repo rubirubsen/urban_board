@@ -103,13 +103,13 @@ export const Header: React.FC<HeaderProps> = ({
   const cityCoords = activeCity === 'HH' ? '53.5511°N 9.9937°E' : '52.3759°N 9.7320°E';
 
   return (
-    <header className="h-14 border-b border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 backdrop-blur-md px-3 sm:px-4 flex items-center justify-between z-30 select-none">
+    <header className="h-14 lg:h-16 border-b border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 backdrop-blur-md px-3 sm:px-4 flex flex-wrap items-center justify-between z-30 select-none">
       {/* Brand & City Indicator with Stylish Flag Buttons */}
       <div className="flex items-center space-x-2 sm:space-x-3">
         {onToggleMobileSidebar && (
           <button
             onClick={onToggleMobileSidebar}
-            className="md:hidden p-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent cursor-pointer"
+            className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent cursor-pointer"
             title="Sektoren & Layer öffnen"
           >
             <Menu className="w-4 h-4" />
@@ -127,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center rounded-lg bg-anthrazit-950/90 border border-anthrazit-800 p-0.5 space-x-0.5 shadow-inner">
             <button
               onClick={() => onSelectCity('H')}
-              className={`px-2 py-1 rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              className={`px-3 py-2 min-h-[44px] rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
                 activeCity === 'H'
                   ? 'bg-accent text-anthrazit-950 shadow-sm border border-accent/60'
                   : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850/80 border border-transparent'
@@ -136,12 +136,12 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <NiedersachsenFlag className="w-4 h-2.5" />
               <span>H</span>
-              <span className="hidden md:inline text-[10px] font-medium opacity-90">Hannover</span>
+              <span className="hidden md:inline text-xs font-medium opacity-90">Hannover</span>
             </button>
 
             <button
               onClick={() => onSelectCity('HH')}
-              className={`px-2 py-1 rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+              className={`px-3 py-2 min-h-[44px] rounded-md text-xs font-mono font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
                 activeCity === 'HH'
                   ? 'bg-accent text-anthrazit-950 shadow-sm border border-accent/60'
                   : 'text-anthrazit-400 hover:text-anthrazit-200 hover:bg-anthrazit-850/80 border border-transparent'
@@ -150,11 +150,11 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <HamburgFlag className="w-4 h-2.5" />
               <span>HH</span>
-              <span className="hidden md:inline text-[10px] font-medium opacity-90">Hamburg</span>
+              <span className="hidden md:inline text-xs font-medium opacity-90">Hamburg</span>
             </button>
           </div>
 
-          <span className="hidden lg:inline-block text-[11px] font-mono text-anthrazit-400">
+          <span className="hidden lg:inline-block text-xs font-mono text-anthrazit-400">
             {cityCoords}
           </span>
         </div>
@@ -187,12 +187,12 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Global Search Button */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center space-x-2 px-3 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/60 text-xs text-anthrazit-300 transition-colors cursor-pointer group"
+          className="flex items-center space-x-2 px-3 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/60 text-xs text-anthrazit-300 transition-colors cursor-pointer group"
           title="OSINT Schnellsuche (Strg + K)"
         >
           <Search className="w-3.5 h-3.5 text-anthrazit-400 group-hover:text-accent" />
           <span className="text-anthrazit-400">Knoten / Straßen suchen...</span>
-          <kbd className="hidden lg:inline-block px-1.5 py-0.5 rounded bg-anthrazit-900 border border-anthrazit-700 text-[10px] font-mono text-anthrazit-400">
+          <kbd className="hidden lg:inline-block px-1.5 py-0.5 rounded bg-anthrazit-900 border border-anthrazit-700 text-xs font-mono text-anthrazit-400">
             Ctrl+K
           </kbd>
         </button>
@@ -203,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Mobile Quick Search Button */}
         <button
           onClick={onOpenSearch}
-          className="md:hidden p-2 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-300 hover:text-accent transition-colors cursor-pointer"
+          className="md:hidden p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-300 hover:text-accent transition-colors cursor-pointer"
           title="OSINT Schnellsuche"
         >
           <Search className="w-4 h-4 text-accent" />
@@ -215,7 +215,7 @@ export const Header: React.FC<HeaderProps> = ({
             value={selectedDistrict}
             onChange={(e) => onSelectDistrict(e.target.value)}
             aria-label="Stadtbezirk filtern"
-            className="text-xs bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-200 rounded px-2.5 py-1.5 focus:outline-none focus:border-accent font-mono transition-colors"
+            className="text-xs min-h-[44px] bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-anthrazit-200 rounded px-3 py-2 focus:outline-none focus:border-accent font-mono transition-colors"
           >
             {districts.map((district) => (
               <option key={district} value={district}>
@@ -228,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Desktop Admin / Ops Hub Trigger */}
         <button
           onClick={onOpenAdmin}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-accent/15 hover:bg-accent/25 border border-accent/50 text-xs font-mono text-accent transition-colors cursor-pointer shadow-sm"
+          className="hidden md:flex items-center space-x-1.5 px-3 py-2 min-h-[44px] rounded bg-accent/15 hover:bg-accent/25 border border-accent/50 text-xs font-mono text-accent transition-colors cursor-pointer shadow-sm"
           title="Admin & Operations Dashboard öffnen (PW: 4dm1n)"
         >
           <span className="font-bold">⚡ OPS</span>
@@ -237,7 +237,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Desktop Glossary & Beginner Help Modal Trigger */}
         <button
           onClick={onOpenGlossary}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
+          className="hidden md:flex items-center space-x-1.5 px-3 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
           title="Glossar & Erklärungen für Einsteiger öffnen"
         >
           <HelpCircle className="w-3.5 h-3.5 text-accent" />
@@ -247,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Desktop Linkliste Modal Trigger */}
         <button
           onClick={onOpenLinklist}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
+          className="hidden md:flex items-center space-x-1.5 px-3 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
           title="Hannover OSINT Linkliste & Quellen öffnen"
         >
           <Bookmark className="w-3.5 h-3.5 text-accent" />
@@ -258,7 +258,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onToggleTheme}
           aria-label={theme === 'dark' ? 'Light Mode aktivieren' : 'Dark Mode aktivieren'}
-          className="p-1.5 sm:p-2 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-anthrazit-300 hover:text-accent transition-colors cursor-pointer"
+          className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-anthrazit-300 hover:text-accent transition-colors cursor-pointer"
           title={theme === 'dark' ? 'Light Mode aktivieren' : 'Dark Mode aktivieren'}
         >
           {theme === 'dark' ? (
@@ -272,7 +272,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="relative md:hidden">
           <button
             onClick={() => setIsMobileQuickMenuOpen(prev => !prev)}
-            className="p-2 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent font-bold transition-colors cursor-pointer"
+            className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent font-bold transition-colors cursor-pointer"
             title="Tools, OPS & Einstellungen"
           >
             {isMobileQuickMenuOpen ? <X className="w-4 h-4" /> : <MoreVertical className="w-4 h-4" />}
@@ -286,9 +286,9 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => setIsMobileQuickMenuOpen(false)}
               />
               <div className="absolute right-0 top-12 w-64 p-3 rounded-xl bg-anthrazit-900 border border-anthrazit-700 shadow-2xl z-50 space-y-2 font-mono text-xs animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="text-[10px] font-bold text-anthrazit-400 uppercase pb-1 border-b border-anthrazit-800 flex items-center justify-between">
+                <div className="text-xs font-bold text-anthrazit-400 uppercase pb-1 border-b border-anthrazit-800 flex items-center justify-between">
                   <span>OSINT Tools & Settings</span>
-                  <span className="text-accent text-[9px]">v0.1</span>
+                  <span className="text-accent text-xs">v0.1</span>
                 </div>
 
                 {/* OPS Admin Hub Button */}
@@ -297,7 +297,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onOpenAdmin?.();
                     setIsMobileQuickMenuOpen(false);
                   }}
-                  className="w-full py-2 px-2.5 rounded bg-accent/15 hover:bg-accent/25 border border-accent/40 text-accent flex items-center space-x-2 font-bold cursor-pointer"
+                  className="w-full py-2 px-3 min-h-[44px] rounded bg-accent/15 hover:bg-accent/25 border border-accent/40 text-accent flex items-center space-x-2 font-bold cursor-pointer"
                 >
                   <Zap className="w-4 h-4 text-accent" />
                   <span>⚡ OPS & Admin Center</span>
@@ -309,7 +309,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onOpenGlossary();
                     setIsMobileQuickMenuOpen(false);
                   }}
-                  className="w-full py-2 px-2.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 text-anthrazit-200 flex items-center space-x-2 cursor-pointer"
+                  className="w-full py-2 px-3 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 text-anthrazit-200 flex items-center space-x-2 cursor-pointer"
                 >
                   <HelpCircle className="w-4 h-4 text-accent" />
                   <span>📖 Glossar & Einsteiger-Hilfe</span>
@@ -321,7 +321,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onOpenLinklist();
                     setIsMobileQuickMenuOpen(false);
                   }}
-                  className="w-full py-2 px-2.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 text-anthrazit-200 flex items-center space-x-2 cursor-pointer"
+                  className="w-full py-2 px-3 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-750 text-anthrazit-200 flex items-center space-x-2 cursor-pointer"
                 >
                   <Bookmark className="w-4 h-4 text-accent" />
                   <span>🔗 Primärquellen & Linkliste</span>
@@ -329,7 +329,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* District Select Dropdown on Mobile */}
                 <div className="pt-1 border-t border-anthrazit-800 space-y-1">
-                  <div className="text-[10px] text-anthrazit-400 font-bold uppercase flex items-center space-x-1">
+                  <div className="text-xs text-anthrazit-400 font-bold uppercase flex items-center space-x-1">
                     <SlidersHorizontal className="w-3 h-3 text-accent" />
                     <span>Stadtbezirk filtern:</span>
                   </div>
@@ -339,7 +339,7 @@ export const Header: React.FC<HeaderProps> = ({
                       onSelectDistrict(e.target.value);
                       setIsMobileQuickMenuOpen(false);
                     }}
-                    className="w-full text-xs bg-anthrazit-950 border border-anthrazit-700 text-anthrazit-200 rounded p-2 focus:outline-none focus:border-accent font-mono"
+                    className="w-full text-xs min-h-[44px] bg-anthrazit-950 border border-anthrazit-700 text-anthrazit-200 rounded px-3 py-2 focus:outline-none focus:border-accent font-mono"
                   >
                     {districts.map((district) => (
                       <option key={district} value={district}>

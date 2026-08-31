@@ -74,19 +74,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between select-none overflow-y-auto">
+    <div className="h-full flex flex-col justify-between select-none overflow-y-auto overscroll-contain">
       <div className="p-3 space-y-4">
         {/* Mobile Header with Close Button */}
-        <div className="flex md:hidden items-center justify-between pb-2 border-b border-anthrazit-800">
+        <div className="flex lg:hidden items-center justify-between pb-2 border-b border-anthrazit-800">
           <div className="flex items-center space-x-2">
             <span className="font-mono font-bold text-xs text-accent">⬡ HBOARD</span>
-            <span className="text-[10px] text-anthrazit-400 font-mono uppercase">
+            <span className="text-xs text-anthrazit-400 font-mono uppercase">
               {activeCity === 'HH' ? 'Hamburg' : 'Hannover'}
             </span>
           </div>
           <button
             onClick={onCloseMobile}
-            className="p-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 text-anthrazit-300 hover:text-anthrazit-100 cursor-pointer"
+            className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-850 hover:bg-anthrazit-800 text-anthrazit-300 hover:text-anthrazit-100 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -94,14 +94,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Mobile Primary View Navigation (Fast switching on iPhone/Tablet) */}
         {onSelectMobileView && (
-          <div className="md:hidden space-y-2">
-            <div className="text-[10px] font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-1">
+          <div className="lg:hidden space-y-2">
+            <div className="text-xs font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-1">
               Haupt-Ansichten
             </div>
             <div className="grid grid-cols-2 gap-1.5 font-mono text-xs">
               <button
                 onClick={() => onSelectMobileView('map')}
-                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                className={`py-2 px-3 min-h-[44px] rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
                   activeMobileView === 'map'
                     ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
                     : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={() => onSelectMobileView('traffic')}
-                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                className={`py-2 px-3 min-h-[44px] rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
                   activeMobileView === 'traffic'
                     ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
                     : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={() => onSelectMobileView('schedules')}
-                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                className={`py-2 px-3 min-h-[44px] rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
                   activeMobileView === 'schedules'
                     ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
                     : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
@@ -137,7 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={() => onSelectMobileView('admin')}
-                className="py-2 px-2.5 rounded flex items-center space-x-2 border border-accent/40 bg-anthrazit-850 hover:bg-anthrazit-800 text-accent font-bold cursor-pointer"
+                className="py-2 px-3 min-h-[44px] rounded flex items-center space-x-2 border border-accent/40 bg-anthrazit-850 hover:bg-anthrazit-800 text-accent font-bold cursor-pointer"
               >
                 <Zap className="w-3.5 h-3.5 shrink-0 text-accent" />
                 <span className="truncate">⚡ OPS Center</span>
@@ -148,9 +148,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Sektor-Navigation */}
         <div>
-          <div className="text-[10px] font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-2 mb-2 flex items-center justify-between">
+          <div className="text-xs font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-2 mb-2 flex items-center justify-between">
             <span>OSINT Sektoren</span>
-            <span className="text-accent text-[9px] font-bold">
+            <span className="text-accent text-xs font-bold">
               {activeCity === 'HH' ? 'HH SEKTOR' : 'H SEKTOR'}
             </span>
           </div>
@@ -162,7 +162,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => onSelectCategory(item.id)}
-                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded text-xs font-mono transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono transition-all cursor-pointer ${
                     isActive
                       ? 'bg-accent/15 text-accent border border-accent/40 font-semibold'
                       : 'text-anthrazit-300 hover:bg-anthrazit-850 hover:text-anthrazit-100 border border-transparent'
@@ -172,7 +172,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'text-anthrazit-400'}`} />
                     <span className="truncate">{item.label}</span>
                   </div>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1 ${
+                  <span className={`text-xs px-1.5 py-0.5 rounded font-mono shrink-0 ml-1 ${
                     isActive ? 'bg-accent text-anthrazit-950 font-bold' : 'bg-anthrazit-800 text-anthrazit-400'
                   }`}>
                     {item.count}
@@ -185,11 +185,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* GIS / Map Layer Toggles */}
         <div>
-          <div className="text-[10px] font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-2 mb-2 flex items-center justify-between">
+          <div className="text-xs font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-2 mb-2 flex items-center justify-between">
             <span>Karten-Ebenen</span>
             <button
               onClick={onCenterCity}
-              className="text-accent hover:underline flex items-center space-x-1 lowercase text-[10px] cursor-pointer"
+              className="text-accent hover:underline flex items-center justify-center space-x-1 lowercase text-xs min-h-[44px] min-w-[44px] cursor-pointer"
               title={activeCity === 'HH' ? 'Auf Hamburg Zentrum zentrieren' : 'Auf Hannover Zentrum zentrieren'}
             >
               <Crosshair className="w-3 h-3" />
@@ -200,7 +200,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="space-y-1.5">
             <button
               onClick={() => onToggleLayer('webcams')}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-mono border transition-colors cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono border transition-colors cursor-pointer ${
                 activeLayers.webcams 
                   ? 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-200' 
                   : 'bg-anthrazit-900/50 border-anthrazit-800/60 text-anthrazit-500'
@@ -215,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => onToggleLayer('iotSensors')}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-mono border transition-colors cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono border transition-colors cursor-pointer ${
                 activeLayers.iotSensors 
                   ? 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-200' 
                   : 'bg-anthrazit-900/50 border-anthrazit-800/60 text-anthrazit-500'
@@ -230,7 +230,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => onToggleLayer('mobility')}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-mono border transition-colors cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono border transition-colors cursor-pointer ${
                 activeLayers.mobility 
                   ? 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-200' 
                   : 'bg-anthrazit-900/50 border-anthrazit-800/60 text-anthrazit-500'
@@ -245,7 +245,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => onToggleLayer('infra')}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-mono border transition-colors cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono border transition-colors cursor-pointer ${
                 activeLayers.infra 
                   ? 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-200' 
                   : 'bg-anthrazit-900/50 border-anthrazit-800/60 text-anthrazit-500'
@@ -260,7 +260,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => onToggleLayer('gridOverlay')}
-              className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-mono border transition-colors cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded text-xs font-mono border transition-colors cursor-pointer ${
                 activeLayers.gridOverlay 
                   ? 'bg-anthrazit-850 border-anthrazit-700 text-anthrazit-200' 
                   : 'bg-anthrazit-900/50 border-anthrazit-800/60 text-anthrazit-500'
@@ -279,19 +279,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div>
           <button
             onClick={onOpenOverpass}
-            className="w-full flex items-center justify-between px-3 py-2 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-accent/30 hover:border-accent text-xs font-mono text-accent transition-all cursor-pointer group"
+            className="w-full flex items-center justify-between px-3 py-2 min-h-[44px] rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-accent/30 hover:border-accent text-xs font-mono text-accent transition-all cursor-pointer group"
           >
             <div className="flex items-center space-x-2">
               <Code2 className="w-4 h-4 text-accent" />
               <span className="font-semibold">Overpass GIS Turbo</span>
             </div>
-            <span className="text-[10px] text-anthrazit-400 group-hover:text-accent">4 Presets</span>
+            <span className="text-xs text-anthrazit-400 group-hover:text-accent">4 Presets</span>
           </button>
         </div>
       </div>
 
       {/* Footer Info */}
-      <div className="p-3 border-t border-anthrazit-800 bg-anthrazit-950/60 text-[11px] font-mono space-y-2">
+      <div className="p-3 border-t border-anthrazit-800 bg-anthrazit-950/60 text-xs font-mono space-y-2">
         <div className="flex items-center justify-between text-anthrazit-400">
           <span>REGION</span>
           <span className="text-anthrazit-200 font-semibold">
@@ -302,7 +302,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>{activeCity === 'HH' ? 'BSH / HPA PEGDAT' : 'NLWKN PEGDAT'}</span>
           <span className="text-accent font-semibold">ONLINE</span>
         </div>
-        <div className="pt-1 text-[10px] text-anthrazit-500 text-center">
+        <div className="pt-1 text-xs text-anthrazit-500 text-center">
           HBOARD Urban OSINT Engine v0.1
         </div>
       </div>
@@ -312,13 +312,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Desktop Fixed Sidebar */}
-      <aside className="hidden md:flex md:w-64 border-r border-anthrazit-800 bg-anthrazit-900/90 dark:bg-anthrazit-950/90 shrink-0 select-none overflow-hidden">
+      <aside className="hidden lg:flex lg:w-64 border-r border-anthrazit-800 bg-anthrazit-900/90 dark:bg-anthrazit-950/90 shrink-0 select-none overflow-hidden">
         {sidebarContent}
       </aside>
 
       {/* Mobile Drawer (Slide-out Overlay) */}
       {isOpenMobile && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
+        <div className="fixed inset-0 z-50 flex lg:hidden">
           <div 
             className="fixed inset-0 bg-anthrazit-950/80 backdrop-blur-sm transition-opacity" 
             onClick={onCloseMobile}

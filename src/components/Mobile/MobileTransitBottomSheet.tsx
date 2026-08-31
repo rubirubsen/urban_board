@@ -103,9 +103,9 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
   }, [selectedStop, selectedSchedule]);
 
   const snapClasses = {
-    peek: 'h-16',
+    peek: 'min-h-[64px]',
     half: 'h-[48dvh]',
-    full: 'h-[82dvh]'
+    full: 'h-[calc(100dvh-3.5rem)]'
   };
 
   const handleCycleSnap = () => {
@@ -134,12 +134,13 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
 
   return (
     <div
-      className={`md:hidden fixed bottom-0 left-0 right-0 z-[1100] bg-anthrazit-950/95 backdrop-blur-xl border-t border-anthrazit-800 rounded-t-2xl shadow-2xl transition-all duration-300 ease-out flex flex-col overflow-hidden ${snapClasses[snap]}`}
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-[1100] bg-anthrazit-950/95 backdrop-blur-xl border-t border-anthrazit-800 rounded-t-2xl shadow-2xl transition-all duration-300 ease-out flex flex-col ${snapClasses[snap]}`}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {/* Drag & Header Handle */}
       <div 
         onClick={handleCycleSnap}
-        className="w-full py-2 flex flex-col items-center justify-center cursor-pointer shrink-0 select-none border-b border-anthrazit-900"
+        className="w-full py-2 min-h-[44px] touch-manipulation flex flex-col items-center justify-center cursor-pointer shrink-0 select-none border-b border-anthrazit-900"
       >
         <div className="w-10 h-1 rounded-full bg-anthrazit-700 hover:bg-accent transition-colors" />
         <div className="w-full px-4 pt-1.5 flex items-center justify-between">
@@ -151,14 +152,14 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                 <span className="font-bold text-xs text-anthrazit-100 font-mono truncate">
                   {selectedStop.name}
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-accent/20 text-accent font-mono font-bold shrink-0">
+                <span className="text-xs px-1.5 py-0.5 rounded bg-accent/20 text-accent font-mono font-bold shrink-0">
                   {departures.length > 0 ? `${departures[0].line} in ${departures[0].when}` : 'Live'}
                 </span>
               </>
             ) : selectedSchedule ? (
               <>
                 <span 
-                  className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold text-anthrazit-950 shrink-0"
+                  className="px-1.5 py-0.5 rounded text-xs font-mono font-bold text-anthrazit-950 shrink-0"
                   style={{ backgroundColor: selectedSchedule.color }}
                 >
                   {selectedSchedule.lineRef}
@@ -187,7 +188,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
       </div>
 
       {/* Sheet Content Area (Only rendered meaningfully when half or full) */}
-      <div className="flex-1 overflow-y-auto px-3.5 py-2.5 space-y-3 font-mono text-xs">
+      <div className="flex-1 overflow-y-auto overscroll-contain px-3.5 py-2.5 space-y-3 font-mono text-xs">
         {/* ========================================================================= */}
         {/* VIEW 1: SELECTED STATION DEPARTURES BOARD                                */}
         {/* ========================================================================= */}
@@ -196,14 +197,14 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
             {/* Station Header with Action Buttons */}
             <div className="flex items-start justify-between bg-anthrazit-900/80 p-2.5 rounded-lg border border-anthrazit-800">
               <div className="min-w-0 pr-2">
-                <div className="flex items-center space-x-1 text-[10px] text-accent font-bold uppercase">
+                <div className="flex items-center space-x-1 text-xs text-accent font-bold uppercase">
                   <MapPin className="w-3 h-3" />
                   <span>Haltestelle</span>
                 </div>
                 <h2 className="text-sm font-bold text-anthrazit-100 truncate mt-0.5">
                   {departureStationName || selectedStop.name}
                 </h2>
-                <span className="text-[10px] text-anthrazit-400">
+                <span className="text-xs text-anthrazit-400">
                   {selectedStop.type || 'Nahverkehr'} · {selectedStop.lat.toFixed(4)}°N, {selectedStop.lng.toFixed(4)}°E
                 </span>
               </div>
@@ -211,26 +212,26 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
               <div className="flex items-center space-x-1 shrink-0">
                 <button
                   onClick={() => onFlyToStation(selectedStop.lat, selectedStop.lng, selectedStop.name)}
-                  className="p-2 rounded bg-anthrazit-800 hover:bg-anthrazit-700 text-accent border border-anthrazit-700"
+                  className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-800 hover:bg-anthrazit-700 text-accent border border-anthrazit-700"
                   title="Auf Karte zentrieren"
                 >
-                  <Crosshair className="w-3.5 h-3.5" />
+                  <Crosshair className="w-4 h-4" />
                 </button>
                 <button
                   onClick={onClearStop}
-                  className="p-2 rounded bg-anthrazit-800 hover:bg-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-200 border border-anthrazit-700"
+                  className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded bg-anthrazit-800 hover:bg-anthrazit-700 text-anthrazit-400 hover:text-anthrazit-200 border border-anthrazit-700"
                   title="Auswahl aufheben"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {/* Departures List */}
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px] font-bold text-anthrazit-400 uppercase px-1">
+              <div className="flex items-center justify-between text-xs font-bold text-anthrazit-400 uppercase px-1">
                 <span>Nächste Abfahrten</span>
-                <span className="text-accent text-[10px]">Echtzeit</span>
+                <span className="text-accent text-[11px]">Echtzeit</span>
               </div>
 
               {loadingDepartures ? (
@@ -250,7 +251,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                     return (
                       <div
                         key={`${dep.tripId}-${idx}`}
-                        className={`p-2.5 rounded-lg border flex items-center justify-between transition-colors ${
+                        className={`p-2.5 min-h-[44px] rounded-lg border flex items-center justify-between transition-colors ${
                           isImminent
                             ? 'bg-accent/10 border-accent/40 text-anthrazit-100 shadow-sm'
                             : 'bg-anthrazit-900/90 border-anthrazit-800 text-anthrazit-200'
@@ -265,7 +266,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                             <div className="font-bold text-xs truncate text-anthrazit-100">
                               {dep.direction}
                             </div>
-                            <div className="text-[10px] text-anthrazit-400">
+                            <div className="text-[11px] text-anthrazit-400">
                               {dep.plannedWhen} Uhr {dep.platform ? `· Gl. ${dep.platform}` : ''}
                             </div>
                           </div>
@@ -276,7 +277,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                           <div className={`font-mono font-bold text-xs ${isImminent ? 'text-accent' : 'text-anthrazit-200'}`}>
                             {dep.when.includes('Min') ? dep.when : `in ${dep.when} Min`}
                           </div>
-                          <div className="text-[9px] text-emerald-400 font-medium">
+                          <div className="text-[11px] text-emerald-400 font-medium">
                             {dep.delayMinutes > 0 ? `+${dep.delayMinutes}m Verspätung` : 'Pünktlich'}
                           </div>
                         </div>
@@ -306,16 +307,21 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                     {selectedSchedule.lineName}
                   </span>
                 </div>
-                <span className="text-[10px] text-anthrazit-400 font-mono">
-                  Takt: {selectedSchedule.frequency.peak}
-                </span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs text-anthrazit-400 font-mono">
+                    Takt: {selectedSchedule.frequency.peak}
+                  </span>
+                  <button onClick={_onClearSchedule} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-anthrazit-800 text-anthrazit-400 hover:text-white transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               {/* Direction Switcher Toggle */}
-              <div className="flex rounded bg-anthrazit-950 p-0.5 border border-anthrazit-800 space-x-0.5 text-[11px]">
+              <div className="flex rounded bg-anthrazit-950 p-0.5 border border-anthrazit-800 space-x-0.5 text-xs">
                 <button
                   onClick={() => setSelectedDirection('A')}
-                  className={`flex-1 py-1 px-1.5 rounded font-bold truncate transition-all cursor-pointer ${
+                  className={`flex-1 py-2 px-3 min-h-[44px] rounded font-bold truncate transition-all cursor-pointer ${
                     selectedDirection === 'A'
                       ? 'bg-accent text-anthrazit-950 shadow-sm'
                       : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -325,7 +331,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                 </button>
                 <button
                   onClick={() => setSelectedDirection('B')}
-                  className={`flex-1 py-1 px-1.5 rounded font-bold truncate transition-all cursor-pointer ${
+                  className={`flex-1 py-2 px-3 min-h-[44px] rounded font-bold truncate transition-all cursor-pointer ${
                     selectedDirection === 'B'
                       ? 'bg-accent text-anthrazit-950 shadow-sm'
                       : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -338,11 +344,11 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
 
             {/* Stops Timeline (Perlenkette) */}
             <div className="space-y-1">
-              <div className="text-[10px] font-bold text-anthrazit-400 uppercase px-1">
+              <div className="text-xs font-bold text-anthrazit-400 uppercase px-1">
                 Haltestellenfolge ({activeDir?.stops.length} Stationen · {activeDir?.totalMinutes} Min)
               </div>
 
-              <div className="space-y-1 relative pl-2 before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-anthrazit-750">
+              <div className="space-y-1">
                 {activeDir?.stops.map((stop: ScheduleStopItem, idx: number) => {
                   const isOrigin = idx === 0;
                   const isDest = idx === activeDir.stops.length - 1;
@@ -350,44 +356,56 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                   return (
                     <div
                       key={`${stop.stopName}-${idx}`}
-                      onClick={() => {
-                        const coords = findStationCoords(stop.stopName, isHamburg);
-                        onFlyToStation(
-                          coords.lat,
-                          coords.lng,
-                          stop.stopName
-                        );
-                        onSelectStation({
-                          id: coords.id,
-                          name: stop.stopName,
-                          lat: coords.lat,
-                          lng: coords.lng,
-                          type: selectedSchedule.lineName
-                        });
-                      }}
-                      className="relative flex items-center justify-between p-2 rounded bg-anthrazit-900/60 hover:bg-anthrazit-850 border border-anthrazit-800/80 cursor-pointer active:scale-[0.99] transition-transform ml-4"
+                      className="flex items-start gap-3"
                     >
-                      {/* Timeline Dot Indicator */}
-                      <span
-                        className={`absolute -left-[19px] w-2.5 h-2.5 rounded-full border-2 border-anthrazit-950 ${
-                          isOrigin || isDest ? 'bg-accent' : 'bg-anthrazit-400'
-                        }`}
-                      />
-
-                      <div className="min-w-0 pr-2">
-                        <div className="font-bold text-xs text-anthrazit-200 truncate">
-                          {stop.stopName}
-                        </div>
-                        {stop.transferLines && stop.transferLines.length > 0 && (
-                          <div className="text-[9px] text-accent truncate">
-                            Umstieg: {stop.transferLines.join(', ')}
-                          </div>
+                      {/* Timeline Dot Column */}
+                      <div className="w-4 flex flex-col items-center shrink-0 self-stretch relative">
+                        {!isOrigin && (
+                          <div className="absolute top-0 bottom-1/2 w-0.5 bg-anthrazit-750 -mt-2"></div>
                         )}
+                        {!isDest && (
+                          <div className="absolute top-1/2 bottom-0 w-0.5 bg-anthrazit-750 -mb-2"></div>
+                        )}
+                        <span
+                          className={`relative z-10 mt-2.5 w-2.5 h-2.5 rounded-full border-2 border-anthrazit-950 shrink-0 ${
+                            isOrigin || isDest ? 'bg-accent' : 'bg-anthrazit-400'
+                          }`}
+                        />
                       </div>
 
-                      <span className="text-[10px] text-anthrazit-400 font-mono shrink-0">
-                        +{stop.minuteOffset} Min
-                      </span>
+                      <div
+                        onClick={() => {
+                          const coords = findStationCoords(stop.stopName, isHamburg);
+                          onFlyToStation(
+                            coords.lat,
+                            coords.lng,
+                            stop.stopName
+                          );
+                          onSelectStation({
+                            id: coords.id,
+                            name: stop.stopName,
+                            lat: coords.lat,
+                            lng: coords.lng,
+                            type: selectedSchedule.lineName
+                          });
+                        }}
+                        className="flex-1 flex items-center justify-between p-2 min-h-[44px] rounded bg-anthrazit-900/60 hover:bg-anthrazit-850 border border-anthrazit-800/80 cursor-pointer active:scale-[0.99] transition-transform"
+                      >
+                        <div className="min-w-0 pr-2">
+                          <div className="font-bold text-xs text-anthrazit-200 truncate">
+                            {stop.stopName}
+                          </div>
+                          {stop.transferLines && stop.transferLines.length > 0 && (
+                            <div className="text-[11px] text-accent truncate">
+                              Umstieg: {stop.transferLines.join(', ')}
+                            </div>
+                          )}
+                        </div>
+
+                        <span className="text-xs text-anthrazit-400 font-mono shrink-0">
+                          +{stop.minuteOffset} Min
+                        </span>
+                      </div>
                     </div>
                   );
                 })}
@@ -398,7 +416,7 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
           /* ========================================================================= */
           /* VIEW 3: QUICK EXPLORER / HUB SHORTCUTS (NOTHING SELECTED)                 */
           /* ========================================================================= */
-          <div className="space-y-3">
+          <div className="space-y-3 pb-4">
             <div className="bg-anthrazit-900/80 p-3 rounded-lg border border-anthrazit-800 space-y-1.5">
               <div className="flex items-center space-x-1.5 text-accent font-bold text-xs">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -410,8 +428,8 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
             </div>
 
             {/* Quick Hub Buttons */}
-            <div className="space-y-1.5">
-              <div className="text-[10px] font-bold text-anthrazit-400 uppercase px-1">
+            <div className="space-y-1.5 pb-safe">
+              <div className="text-xs font-bold text-anthrazit-400 uppercase px-1">
                 Wichtige Knotenpunkte ({isHamburg ? 'Hamburg' : 'Hannover'})
               </div>
               <div className="grid grid-cols-1 gap-1.5">
@@ -428,15 +446,15 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                         type: 'Knotenpunkt'
                       });
                     }}
-                    className="p-2.5 rounded-lg bg-anthrazit-900 hover:bg-anthrazit-850 border border-anthrazit-800 text-left flex items-center justify-between transition-colors cursor-pointer"
+                    className="p-2.5 min-h-[48px] rounded-lg bg-anthrazit-900 hover:bg-anthrazit-850 border border-anthrazit-800 text-left flex items-center justify-between transition-colors cursor-pointer"
                   >
                     <div className="flex items-center space-x-2.5 min-w-0">
                       <div className="w-6 h-6 rounded bg-accent/15 border border-accent/40 text-accent flex items-center justify-center shrink-0">
-                        <Train className="w-3.5 h-3.5" />
+                        <Train className="w-4 h-4" />
                       </div>
                       <span className="font-bold text-xs text-anthrazit-200 truncate">{hub.name}</span>
                     </div>
-                    <span className="text-[10px] text-accent font-bold">Abfahrten ➔</span>
+                    <span className="text-[11px] text-accent font-bold">Abfahrten ➔</span>
                   </button>
                 ))}
               </div>

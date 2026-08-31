@@ -117,31 +117,31 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
       ];
 
   return (
-    <div className="space-y-3.5 text-xs font-mono select-none w-full max-w-full overflow-x-hidden">
+    <div className="space-y-3.5 text-xs font-mono select-none w-full max-w-full">
       {/* Header Info Box */}
       <div className="p-3 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-1 w-full">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-anthrazit-100 flex items-center space-x-1.5 uppercase text-[11px] truncate">
+          <span className="font-bold text-anthrazit-100 flex items-center space-x-1.5 uppercase text-xs truncate">
             <Calendar className="w-3.5 h-3.5 text-accent shrink-0" />
             <span className="truncate">Soll-Fahrplan ({isHamburg ? 'HVV Hamburg' : 'ÜSTRA Hannover'})</span>
           </span>
-          <span className="text-[9px] px-1.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30 font-bold shrink-0 ml-1">
+          <span className="text-xs px-1.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30 font-bold shrink-0 ml-1">
             Gültig 2025/2026
           </span>
         </div>
-        <p className="text-[11px] font-sans text-anthrazit-400 leading-snug">
+        <p className="text-xs font-sans text-anthrazit-400 leading-snug">
           Feste planmäßige Aushangfahrpläne (Soll-Zeiten) und vollständige Haltestellenabfolgen.
         </p>
       </div>
 
       {/* Stammstrecken Filter Bar */}
       <div className="space-y-1.5 w-full">
-        <div className="text-[10px] uppercase font-bold text-anthrazit-400 flex items-center justify-between px-1">
+        <div className="text-xs uppercase font-bold text-anthrazit-400 flex items-center justify-between px-1">
           <span>Netz-Sektor wählen</span>
-          <span className="text-[9px] text-anthrazit-500">{isHamburg ? 'U-/S-Bahn & Fähren' : 'Tunnel- & Stadtachsen'}</span>
+          <span className="text-xs text-anthrazit-500">{isHamburg ? 'U-/S-Bahn & Fähren' : 'Tunnel- & Stadtachsen'}</span>
         </div>
 
-        <div className={`grid gap-1 text-[10px] w-full ${isHamburg ? 'grid-cols-4' : 'grid-cols-5'}`}>
+        <div className={`grid gap-1 text-xs w-full ${isHamburg ? 'grid-cols-4' : 'grid-cols-5'}`}>
           {stammstreckenOptions.map((st) => (
             <button
               key={st.id}
@@ -150,7 +150,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                 const firstInStamm = st.id === 'ALL' ? linesList[0] : linesList.find(l => l.stammstrecke === st.id);
                 if (firstInStamm) setSelectedLineRef(firstInStamm.lineRef);
               }}
-              className={`p-1.5 rounded flex flex-col items-center justify-center transition-all cursor-pointer border text-center ${
+              className={`p-1.5 min-h-[44px] rounded flex flex-col items-center justify-center transition-all cursor-pointer border text-center ${
                 selectedStammstrecke === st.id
                   ? 'bg-accent/15 border-accent text-accent font-bold shadow-panel'
                   : 'bg-anthrazit-950 border-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-200'
@@ -170,7 +170,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
             <button
               key={line.lineRef}
               onClick={() => handleSelectLine(line.lineRef)}
-              className={`px-3 py-1.5 rounded text-[11px] font-bold font-mono transition-all cursor-pointer border flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 min-h-[44px] min-w-[44px] rounded text-xs font-bold font-mono transition-all cursor-pointer border flex items-center justify-center space-x-1.5 ${
                 isSelected
                   ? 'bg-accent text-anthrazit-950 border-accent shadow-panel'
                   : 'bg-anthrazit-900 border-anthrazit-700 text-anthrazit-200 hover:border-accent'
@@ -183,7 +183,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
       </div>
 
       {/* Active Line Detail Card */}
-      <div className="p-3 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-3 w-full overflow-x-hidden">
+      <div className="p-3 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-3 w-full">
         {/* Line Title & Direction Toggle */}
         <div className="space-y-2 pb-2 border-b border-anthrazit-800">
           <div className="flex items-center justify-between">
@@ -194,7 +194,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                 </span>
                 <span className="font-bold text-sm text-anthrazit-100 truncate">{activeSchedule.lineName}</span>
               </div>
-              <span className="text-[10px] text-anthrazit-400 block mt-0.5 truncate">
+              <span className="text-xs text-anthrazit-400 block mt-0.5 truncate">
                 {activeSchedule.corridorName}
               </span>
             </div>
@@ -205,7 +205,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                   href={hvvPdfs[0].pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-2 py-1 rounded bg-anthrazit-950 hover:bg-anthrazit-850 border border-emerald-500/40 text-emerald-400 font-bold text-[10px] flex items-center space-x-1 transition-colors cursor-pointer"
+                  className="px-2 py-1 min-h-[44px] rounded bg-anthrazit-950 hover:bg-anthrazit-850 border border-emerald-500/40 text-emerald-400 font-bold text-xs flex items-center justify-center space-x-1 transition-colors cursor-pointer"
                   title={`Offizielles HVV Linienfahrplan-PDF (${hvvPdfs[0].title} • ${hvvPdfs[0].size}) öffnen`}
                 >
                   <FileText className="w-3 h-3" />
@@ -215,7 +215,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
 
               <button
                 onClick={handleDrawRouteOnMap}
-                className="px-2 py-1 rounded bg-anthrazit-950 hover:bg-anthrazit-850 border border-accent/40 text-accent font-bold text-[10px] flex items-center space-x-1 transition-colors cursor-pointer"
+                className="px-2 py-1 min-h-[44px] min-w-[44px] rounded bg-anthrazit-950 hover:bg-anthrazit-850 border border-accent/40 text-accent font-bold text-xs flex items-center justify-center space-x-1 transition-colors cursor-pointer"
                 title="Strecke auf der Karte visualisieren"
               >
                 <Route className="w-3 h-3" />
@@ -226,16 +226,16 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
 
           {/* Special Notice (e.g. Bahnhof Nordstadt Baustelle) */}
           {activeSchedule.specialNotice && (
-            <div className="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] flex items-start space-x-1.5 font-sans">
+            <div className="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start space-x-1.5 font-sans">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <span>{activeSchedule.specialNotice}</span>
             </div>
           )}
 
           {/* Direction Switcher */}
-          <div className="flex items-center justify-between bg-anthrazit-950 p-1.5 rounded border border-anthrazit-800 w-full">
+          <div className="flex items-center justify-between bg-anthrazit-950 p-1.5 rounded border border-anthrazit-800 w-full min-h-[44px]">
             <div className="truncate flex-1 pr-2">
-              <span className="text-[9px] uppercase font-bold text-anthrazit-500 block">Fahrtrichtung:</span>
+              <span className="text-xs uppercase font-bold text-anthrazit-500 block">Fahrtrichtung:</span>
               <span className="text-xs font-bold text-anthrazit-100 truncate block">
                 {activeDir.origin} ➔ {activeDir.destination}
               </span>
@@ -243,7 +243,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
 
             <button
               onClick={() => setSelectedDirection(selectedDirection === 'A' ? 'B' : 'A')}
-              className="p-1.5 rounded hover:bg-anthrazit-800 text-accent flex items-center space-x-1 cursor-pointer border border-anthrazit-700 text-[10px] shrink-0"
+              className="p-1.5 rounded hover:bg-anthrazit-800 text-accent flex items-center justify-center space-x-1 cursor-pointer border border-anthrazit-700 text-xs shrink-0 min-h-[44px] px-2"
               title="Gegenrichtung umschalten"
             >
               <ArrowRightLeft className="w-3 h-3" />
@@ -256,7 +256,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
         <div className="flex rounded bg-anthrazit-950 p-1 border border-anthrazit-800 w-full">
           <button
             onClick={() => setHubViewMode('timeline')}
-            className={`flex-1 py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1 text-[11px] truncate ${
+            className={`flex-1 py-1.5 min-h-[44px] rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1 text-xs truncate ${
               hubViewMode === 'timeline'
                 ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
                 : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -268,7 +268,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
 
           <button
             onClick={() => setHubViewMode('timetable')}
-            className={`flex-1 py-1.5 rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1 text-[11px] truncate ${
+            className={`flex-1 py-1.5 min-h-[44px] rounded text-center transition-all cursor-pointer flex items-center justify-center space-x-1 text-xs truncate ${
               hubViewMode === 'timetable'
                 ? 'bg-accent text-anthrazit-950 font-bold shadow-sm'
                 : 'text-anthrazit-400 hover:text-anthrazit-200'
@@ -284,13 +284,13 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
       {hubViewMode === 'timeline' && (
         <div className="space-y-1.5 w-full">
           <div className="flex items-center justify-between px-1">
-            <span className="text-[10px] uppercase font-bold text-anthrazit-400">
+            <span className="text-xs uppercase font-bold text-anthrazit-400">
               Haltestellen-Reihenfolge
             </span>
-            <span className="text-[9px] text-anthrazit-500">Klick = Map-Focus & Fahrplan</span>
+            <span className="text-xs text-anthrazit-500">Klick = Map-Focus & Fahrplan</span>
           </div>
 
-          <div className="space-y-1 max-h-96 overflow-y-auto overflow-x-hidden pr-0.5 w-full">
+          <div className="space-y-1 max-h-96 overflow-y-auto overscroll-contain overflow-x-hidden pr-0.5 w-full">
             {activeDir.stops.map((stop, idx) => {
               const isOrigin = idx === 0;
               const isDestination = idx === activeDir.stops.length - 1;
@@ -341,7 +341,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                 <div
                   key={stop.stopName + idx}
                   onClick={handleStopClick}
-                  className={`p-2 rounded border transition-colors cursor-pointer flex items-center justify-between w-full group ${
+                  className={`p-2 min-h-[44px] rounded border transition-colors cursor-pointer flex items-center justify-between w-full group ${
                     isSelected
                       ? 'bg-accent/15 border-accent text-accent font-bold shadow-sm'
                       : isOrigin || isDestination
@@ -350,7 +350,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                   }`}
                 >
                   <div className="flex items-center space-x-2 min-w-0 pr-1">
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono shrink-0 font-bold ${
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 font-bold ${
                       isSelected
                         ? 'bg-accent text-anthrazit-950'
                         : isOrigin || isDestination
@@ -365,7 +365,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                         {stop.stopName}
                       </span>
                       {stop.notice && (
-                        <span className="text-[9px] text-amber-400 block font-sans truncate">
+                        <span className="text-xs text-amber-400 block font-sans truncate">
                           ⚠️ {stop.notice}
                         </span>
                       )}
@@ -374,19 +374,19 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
 
                   <div className="text-right shrink-0 pl-1 flex flex-col items-end">
                     <div className="flex items-center space-x-1.5">
-                      <span className="text-[11px] font-mono font-bold text-accent">
+                      <span className="text-xs font-mono font-bold text-accent">
                         +{stop.minuteOffset} Min.
                       </span>
-                      <span className="text-[9px] px-1 py-0.5 rounded bg-accent/20 text-accent font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-xs px-1 py-0.5 rounded bg-accent/20 text-accent font-bold opacity-0 group-hover:opacity-100 transition-opacity">
                         ⏱️ Live
                       </span>
                     </div>
                     {stop.isHighPlatform === false ? (
-                      <span className="text-[9px] text-amber-400 block" title="Nicht barrierefrei">
+                      <span className="text-xs text-amber-400 block" title="Nicht barrierefrei">
                         ♿ Nicht stufenlos
                       </span>
                     ) : (
-                      <span className="text-[9px] text-emerald-400 block" title="Barrierefreier Hochbahnsteig">
+                      <span className="text-xs text-emerald-400 block" title="Barrierefreier Hochbahnsteig">
                         ♿ Hochbahnst.
                       </span>
                     )}
@@ -403,12 +403,12 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
         <div className="space-y-3 w-full overflow-x-hidden">
           {/* Station & Day-Type Selector */}
           <div className="p-2.5 rounded bg-anthrazit-900 border border-anthrazit-800 space-y-2 w-full">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] text-anthrazit-400 uppercase font-bold">Haltestelle wählen:</span>
+            <div className="flex items-center justify-between min-h-[44px]">
+              <span className="text-xs text-anthrazit-400 uppercase font-bold pr-2">Haltestelle wählen:</span>
               <select
                 value={activeStationName}
                 onChange={(e) => setActiveStationName(e.target.value)}
-                className="bg-anthrazit-950 border border-anthrazit-700 text-anthrazit-100 text-xs rounded px-2 py-1 focus:outline-none focus:border-accent max-w-[220px]"
+                className="bg-anthrazit-950 border border-anthrazit-700 text-anthrazit-100 text-xs rounded px-2 py-1 focus:outline-none focus:border-accent min-h-[44px] max-w-[220px]"
               >
                 {activeDir.stops.map((s) => (
                   <option key={s.stopName} value={s.stopName}>
@@ -419,7 +419,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
             </div>
 
             {/* Day Type Tabs */}
-            <div className="grid grid-cols-3 gap-1 text-[10px] w-full">
+            <div className="grid grid-cols-3 gap-1 text-xs w-full">
               {[
                 { id: 'weekday', label: 'Montag – Freitag' },
                 { id: 'saturday', label: 'Samstag' },
@@ -428,67 +428,69 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                 <button
                   key={d.id}
                   onClick={() => setSelectedDayType(d.id as any)}
-                  className={`py-1.5 rounded font-bold transition-all cursor-pointer border text-center truncate ${
+                  className={`py-1.5 min-h-[44px] rounded font-bold transition-all cursor-pointer border text-center flex items-center justify-center truncate ${
                     selectedDayType === d.id
                       ? 'bg-accent text-anthrazit-950 border-accent'
                       : 'bg-anthrazit-950 text-anthrazit-400 border-anthrazit-800 hover:text-anthrazit-200'
                   }`}
                 >
-                  {d.label}
+                  <span className="truncate">{d.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Timetable Matrix Grid */}
-          <div className="rounded bg-anthrazit-900 border border-anthrazit-800 overflow-hidden w-full">
-            <div className="grid grid-cols-6 bg-anthrazit-950 p-2 border-b border-anthrazit-800 font-bold text-[10px] text-anthrazit-400 uppercase">
-              <span className="col-span-1 text-center">Uhr</span>
-              <span className="col-span-5 pl-2 truncate">Soll-Abfahrten ({currentStopItem.stopName})</span>
-            </div>
+          <div className="rounded bg-anthrazit-900 border border-anthrazit-800 overflow-x-auto w-full">
+            <div className="min-w-[320px]">
+              <div className="grid grid-cols-6 bg-anthrazit-950 p-2 border-b border-anthrazit-800 font-bold text-xs text-anthrazit-400 uppercase">
+                <span className="col-span-1 text-center">Uhr</span>
+                <span className="col-span-5 pl-2 truncate">Soll-Abfahrten ({currentStopItem.stopName})</span>
+              </div>
 
-            <div className="max-h-80 overflow-y-auto overflow-x-hidden divide-y divide-anthrazit-800/60 w-full">
-              {stationTimetable.map((row) => {
-                const mins = selectedDayType === 'weekday' 
-                  ? row.minutesWeekday 
-                  : selectedDayType === 'saturday' 
-                  ? row.minutesSaturday 
-                  : row.minutesSunday;
+              <div className="max-h-80 overflow-y-auto overscroll-contain overflow-x-hidden divide-y divide-anthrazit-800/60 w-full">
+                {stationTimetable.map((row) => {
+                  const mins = selectedDayType === 'weekday' 
+                    ? row.minutesWeekday 
+                    : selectedDayType === 'saturday' 
+                    ? row.minutesSaturday 
+                    : row.minutesSunday;
 
-                if (mins.length === 0) return null;
+                  if (mins.length === 0) return null;
 
-                const isCurrentHour = new Date().getHours() === row.hour;
+                  const isCurrentHour = new Date().getHours() === row.hour;
 
-                return (
-                  <div
-                    key={row.hour}
-                    className={`grid grid-cols-6 p-2 text-xs items-center w-full ${
-                      isCurrentHour ? 'bg-accent/10 border-l-2 border-accent' : 'hover:bg-anthrazit-850'
-                    }`}
-                  >
-                    <span className={`col-span-1 text-center font-bold font-mono ${
-                      isCurrentHour ? 'text-accent' : 'text-anthrazit-200'
-                    }`}>
-                      {row.hour < 10 ? `0${row.hour}` : row.hour}
-                    </span>
+                  return (
+                    <div
+                      key={row.hour}
+                      className={`grid grid-cols-6 p-2 text-xs items-center w-full ${
+                        isCurrentHour ? 'bg-accent/10 border-l-2 border-accent' : 'hover:bg-anthrazit-850'
+                      }`}
+                    >
+                      <span className={`col-span-1 text-center font-bold font-mono ${
+                        isCurrentHour ? 'text-accent' : 'text-anthrazit-200'
+                      }`}>
+                        {row.hour < 10 ? `0${row.hour}` : row.hour}
+                      </span>
 
-                    <div className="col-span-5 flex flex-wrap gap-1.5 pl-2">
-                      {mins.map((m) => (
-                        <span
-                          key={m}
-                          className={`px-1.5 py-0.5 rounded font-mono font-bold text-[11px] ${
-                            isCurrentHour
-                              ? 'bg-accent/20 text-accent border border-accent/40'
-                              : 'bg-anthrazit-950 text-anthrazit-300 border border-anthrazit-700'
-                          }`}
-                        >
-                          {m < 10 ? `0${m}` : m}
-                        </span>
-                      ))}
+                      <div className="col-span-5 flex flex-wrap gap-1.5 pl-2">
+                        {mins.map((m) => (
+                          <span
+                            key={m}
+                            className={`px-1.5 py-1 rounded font-mono font-bold text-xs min-h-[32px] min-w-[32px] flex items-center justify-center ${
+                              isCurrentHour
+                                ? 'bg-accent/20 text-accent border border-accent/40'
+                                : 'bg-anthrazit-950 text-anthrazit-300 border border-anthrazit-700'
+                            }`}
+                          >
+                            {m < 10 ? `0${m}` : m}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
