@@ -12,6 +12,7 @@ import { CommandPalette } from './components/Modals/CommandPalette';
 import { LinklistViewModal } from './components/Modals/LinklistViewModal';
 import { GlossaryModal } from './components/Modals/GlossaryModal';
 import { WebcamViewerModal } from './components/Modals/WebcamViewerModal';
+import { AdminDashboardModal } from './components/Modals/AdminDashboardModal';
 import { 
   ThemeMode, 
   CategoryType, 
@@ -20,6 +21,7 @@ import {
   OverpassLiveElement 
 } from './types';
 import { TransitLineRoute } from './data/transitRoutes';
+import { TransitStop } from './services/apiService';
 import { 
   INITIAL_GEO_MARKERS, 
   HAMBURG_GEO_MARKERS,
@@ -50,7 +52,9 @@ import {
   Train,
   Calendar,
   Camera,
-  ExternalLink
+  ExternalLink,
+  Compass,
+  Layers
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -60,6 +64,10 @@ export const App: React.FC = () => {
   // Active City: 'H' (Hannover) or 'HH' (Hamburg)
   const [activeCity, setActiveCity] = useState<'H' | 'HH'>('H');
 
+  // Mobile / Responsive View Mode ('map' | 'deck') & Mobile Sidebar Drawer
+  const [mobileTab, setMobileTab] = useState<'map' | 'deck'>('map');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+
   // Filters & Selection
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Alle Stadtbezirke');
   const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
@@ -68,8 +76,11 @@ export const App: React.FC = () => {
   // Active Line Route displayed on Map (e.g. Stadtbahn 1, 4, 5, 6, 10, S4, U1, U3, S1)
   const [activeRoute, setActiveRoute] = useState<TransitLineRoute | null>(null);
 
-  // Dynamic list of markers including dynamically pinned transit stops & webcams
-  const [customMarkers, setCustomMarkers] = useState<GeoLocation[]>([
+  // Active Transit Stop for Real-time Departures (only populated on explicit click)
+  const [selectedTransitStop, setSelectedTransitStop] = useState<TransitStop | null>(null);
+
+  // Core static & predefined map markers
+  const [customMarkers] = useState<GeoLocation[]>([
     ...INITIAL_GEO_MARKERS,
     ...HAMBURG_GEO_MARKERS
   ]);
@@ -94,6 +105,7 @@ export const App: React.FC = () => {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isLinklistOpen, setIsLinklistOpen] = useState<boolean>(false);
   const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
+  const [isOpsAdminOpen, setIsOpsAdminOpen] = useState<boolean>(false);
   const [activeWebcamModal, setActiveWebcamModal] = useState<GeoLocation | null>(null);
 
   // Map Instance Reference
@@ -106,6 +118,7 @@ export const App: React.FC = () => {
     setActiveCity(city);
     setSelectedDistrict('Alle Stadtbezirke');
     setSelectedMarker(null);
+    setSelectedTransitStop(null);
     setActiveRoute(null);
     setOverpassLiveElements([]);
     if (mapInstance) {
@@ -187,40 +200,56 @@ export const App: React.FC = () => {
     };
   }, [customMarkers, activeCity]);
 
-  // Fly to Station from ÖPNV Search / Pin & add marker if not existing
-  const handleFlyToStation = (lat: number, lng: number, name: string) => {
+  // Fly to Station on Map without adding persistent custom markers
+  const handleFlyToStation = (lat: number, lng: number, _name?: string) => {
     if (mapInstance) {
-      mapInstance.flyTo([lat, lng], 16, { duration: 1.2 });
+      mapInstance.flyTo([lat, lng], 16, { duration: 0.8 });
     }
+  };
 
-    const existing = customMarkers.find(m => Math.abs(m.lat - lat) < 0.001 && Math.abs(m.lng - lng) < 0.001);
-    if (existing) {
-      setSelectedMarker(existing);
-    } else {
-      const isHH = lat >= 53.0;
-      const isWebcam = name.toLowerCase().includes('webcam') || name.toLowerCase().includes('kamera');
-      const newMarker: GeoLocation = {
-        id: `marker-${Date.now()}`,
-        name: name,
-        lat: lat,
-        lng: lng,
-        category: 'traffic',
-        type: isWebcam ? 'Verkehrskamera' : 'Haltestelle',
-        district: isHH ? 'Hamburg-Mitte' : 'Mitte',
-        status: 'active',
-        explanation: isWebcam 
-          ? `Live-Verkehrskamera an ${name}.` 
-          : `Gepinnte Haltestelle ${name}. Zeigt minutengenaue HAFAS-Echtzeitabfahrten und Fahrplandaten.`,
-        details: {
-          'Knoten': name,
-          'Typ': isWebcam ? 'Verkehrskamera' : 'ÖPNV Haltestelle',
-          'Quelle': isWebcam ? (isHH ? 'Port of Hamburg / HPA' : 'VMZ Niedersachsen') : (isHH ? 'HVV / HAFAS' : 'GVH / HAFAS')
-        },
-        timestamp: 'Live'
+  // Select a station stop directly on the active line track on the map
+  const handleSelectStationStopOnMap = async (stopName: string, lat: number, lng: number, lineName: string) => {
+    let stopObj: TransitStop;
+    if (activeCity === 'HH') {
+      const { ALL_HAMBURG_STATIONS } = await import('./data/hamburgStations');
+      const match = ALL_HAMBURG_STATIONS.find(s => 
+        s.name.toLowerCase().includes(stopName.toLowerCase()) || 
+        stopName.toLowerCase().includes(s.name.toLowerCase())
+      );
+      stopObj = match || {
+        id: `hh-${stopName.toLowerCase().replace(/\s+/g, '-')}`,
+        name: stopName,
+        lat,
+        lng,
+        type: lineName
       };
-      setCustomMarkers(prev => [...prev, newMarker]);
-      setSelectedMarker(newMarker);
+    } else {
+      const { ALL_HANNOVER_STATIONS } = await import('./data/hannoverStations');
+      const match = ALL_HANNOVER_STATIONS.find(s => 
+        s.name.toLowerCase().includes(stopName.toLowerCase()) || 
+        stopName.toLowerCase().includes(s.name.toLowerCase())
+      );
+      stopObj = match || {
+        id: `hn-${stopName.toLowerCase().replace(/\s+/g, '-')}`,
+        name: stopName,
+        lat,
+        lng,
+        type: lineName
+      };
     }
+    setSelectedTransitStop(stopObj);
+    handleFlyToStation(lat, lng, stopName);
+    setActiveRightTab('traffic');
+    setIsRightDeckCollapsed(false);
+    setMobileTab('deck');
+  };
+
+  // Select a station stop from TransitScheduleHub timeline
+  const handleSelectStationFromHub = (stop: TransitStop) => {
+    setSelectedTransitStop(stop);
+    setActiveRightTab('traffic');
+    setIsRightDeckCollapsed(false);
+    setMobileTab('deck');
   };
 
   // Toggle single layer
@@ -228,12 +257,50 @@ export const App: React.FC = () => {
     setActiveLayers(prev => ({ ...prev, [layer]: !prev[layer] }));
   };
 
-  // Select marker and open details panel
-  const handleSelectMarker = (marker: GeoLocation | null) => {
+  // Select marker and open details panel or live departures if transit
+  const handleSelectMarker = async (marker: GeoLocation | null) => {
     setSelectedMarker(marker);
-    if (marker) {
+    if (!marker) return;
+
+    if (marker.type === 'transit') {
+      let stopObj: TransitStop;
+      if (activeCity === 'HH') {
+        const { ALL_HAMBURG_STATIONS } = await import('./data/hamburgStations');
+        const match = ALL_HAMBURG_STATIONS.find(s => 
+          s.id === marker.id ||
+          s.name.toLowerCase().includes(marker.name.toLowerCase()) || 
+          marker.name.toLowerCase().includes(s.name.toLowerCase())
+        );
+        stopObj = match || {
+          id: marker.id,
+          name: marker.name,
+          lat: marker.lat,
+          lng: marker.lng,
+          type: marker.type
+        };
+      } else {
+        const { ALL_HANNOVER_STATIONS } = await import('./data/hannoverStations');
+        const match = ALL_HANNOVER_STATIONS.find(s => 
+          s.id === marker.id ||
+          s.name.toLowerCase().includes(marker.name.toLowerCase()) || 
+          marker.name.toLowerCase().includes(s.name.toLowerCase())
+        );
+        stopObj = match || {
+          id: marker.id,
+          name: marker.name,
+          lat: marker.lat,
+          lng: marker.lng,
+          type: marker.type
+        };
+      }
+      setSelectedTransitStop({ ...stopObj });
+      setActiveRightTab('traffic');
+      setIsRightDeckCollapsed(false);
+      setMobileTab('deck');
+    } else {
       setActiveRightTab('details');
       setIsRightDeckCollapsed(false);
+      setMobileTab('deck');
     }
   };
 
@@ -241,6 +308,7 @@ export const App: React.FC = () => {
   const handleSelectPreset = (_preset: OverpassPreset) => {
     setActiveRightTab('overpass');
     setIsRightDeckCollapsed(false);
+    setMobileTab('deck');
   };
 
   return (
@@ -257,6 +325,8 @@ export const App: React.FC = () => {
         onOpenSearch={() => setIsCommandPaletteOpen(true)}
         onOpenLinklist={() => setIsLinklistOpen(true)}
         onOpenGlossary={() => setIsGlossaryOpen(true)}
+        onOpenAdmin={() => setIsOpsAdminOpen(true)}
+        onToggleMobileSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
         activeMarkerCount={filteredMarkers.length}
       />
 
@@ -267,9 +337,10 @@ export const App: React.FC = () => {
           activeCategory={activeCategory}
           onSelectCategory={(cat) => {
             setActiveCategory(cat);
-            if (cat === 'cyber') setActiveRightTab('cyber');
-            else if (cat === 'traffic') setActiveRightTab('traffic');
-            else if (cat === 'iot') setActiveRightTab('telemetry');
+            if (cat === 'cyber') { setActiveRightTab('cyber'); setMobileTab('deck'); }
+            else if (cat === 'traffic') { setActiveRightTab('traffic'); setMobileTab('deck'); }
+            else if (cat === 'iot') { setActiveRightTab('telemetry'); setMobileTab('deck'); }
+            setIsMobileSidebarOpen(false);
           }}
           activeLayers={activeLayers}
           onToggleLayer={handleToggleLayer}
@@ -277,13 +348,17 @@ export const App: React.FC = () => {
           onOpenOverpass={() => {
             setActiveRightTab('overpass');
             setIsRightDeckCollapsed(false);
+            setMobileTab('deck');
+            setIsMobileSidebarOpen(false);
           }}
+          isOpenMobile={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
           activeCity={activeCity}
           categoryCounts={categoryCounts}
         />
 
         {/* Center: Full-height Leaflet OSINT Map with Route Polyline & Overpass Elements */}
-        <main className="flex-1 relative h-full bg-anthrazit-950">
+        <main className={`flex-1 relative h-full bg-anthrazit-950 ${mobileTab === 'map' ? 'flex' : 'hidden md:flex'}`}>
           <OSINTMap
             markers={filteredMarkers}
             theme={theme}
@@ -296,21 +371,34 @@ export const App: React.FC = () => {
             onClearRoute={() => setActiveRoute(null)}
             onOpenWebcam={(cam) => setActiveWebcamModal(cam)}
             onMapReady={(map) => setMapInstance(map)}
+            onSelectStationStop={handleSelectStationStopOnMap}
           />
         </main>
 
-        {/* Right Widget Deck (Dockable/Collapsible - No horizontal scroll) */}
+        {/* Right Widget Deck (Responsive: Full-screen on mobile, dockable on tablet/desktop) */}
         <aside
           className={`border-l border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 flex flex-col shrink-0 transition-all duration-200 z-20 overflow-x-hidden ${
-            isRightDeckCollapsed ? 'w-10' : 'w-[420px]'
+            mobileTab === 'deck' ? 'flex-1 w-full h-full' : 'hidden md:flex'
+          } ${
+            isRightDeckCollapsed ? 'md:w-10' : 'md:w-[380px] lg:w-[420px]'
           }`}
         >
           {/* Deck Header & Clean Segmented Tab Bar */}
           <div className="h-11 border-b border-anthrazit-800 flex items-center justify-between px-2 bg-anthrazit-950 shrink-0">
+            {/* Mobile Back-to-Map button */}
+            <button
+              onClick={() => setMobileTab('map')}
+              className="md:hidden mr-1.5 p-1 rounded bg-anthrazit-850 hover:bg-anthrazit-800 text-accent border border-accent/40 font-mono text-[10px] flex items-center space-x-1 cursor-pointer shrink-0"
+              title="Zurück zur Karte"
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span>Karte</span>
+            </button>
+
             {!isRightDeckCollapsed ? (
-              <div className="flex items-center space-x-1 flex-1 min-w-0 pr-1">
+              <div className="flex items-center space-x-1 flex-1 min-w-0 pr-1 overflow-x-auto no-scrollbar">
                 {[
-                  { id: 'traffic', label: 'ÖPNV Live', icon: Train },
+                  { id: 'traffic', label: 'ÖPNV', icon: Train },
                   { id: 'schedules', label: 'Fahrplan', icon: Calendar },
                   { id: 'telemetry', label: 'IoT/Wetter', icon: Activity },
                   { id: 'cyber', label: 'Cyber', icon: Globe },
@@ -359,7 +447,7 @@ export const App: React.FC = () => {
             {/* Collapse Toggle */}
             <button
               onClick={() => setIsRightDeckCollapsed(prev => !prev)}
-              className="p-1 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer shrink-0"
+              className="hidden md:flex p-1 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer shrink-0"
               title={isRightDeckCollapsed ? "Deck ausklappen" : "Deck einklappen"}
             >
               {isRightDeckCollapsed ? <Maximize2 className="w-3.5 h-3.5" /> : <Minimize2 className="w-3.5 h-3.5" />}
@@ -376,6 +464,8 @@ export const App: React.FC = () => {
                   onSelectStationOnMap={handleFlyToStation}
                   onSelectRoute={(route) => setActiveRoute(route)}
                   activeCity={activeCity}
+                  selectedStation={selectedTransitStop}
+                  onSelectStation={setSelectedTransitStop}
                 />
               )}
 
@@ -384,6 +474,7 @@ export const App: React.FC = () => {
                   activeRoute={activeRoute}
                   onSelectRoute={(route) => setActiveRoute(route)}
                   onSelectStationOnMap={handleFlyToStation}
+                  onSelectStationForLiveDepartures={handleSelectStationFromHub}
                   activeCity={activeCity}
                 />
               )}
@@ -506,6 +597,63 @@ export const App: React.FC = () => {
         </aside>
       </div>
 
+      {/* Mobile Bottom Navigation Bar (< md) */}
+      <nav className={`h-14 border-t ${theme === 'dark' ? 'border-anthrazit-800 bg-anthrazit-950/95' : 'border-anthrazit-300 bg-anthrazit-100/95'} backdrop-blur-md md:hidden flex items-center justify-around px-2 z-30 shrink-0 select-none pb-safe`}>
+        <button
+          onClick={() => setMobileTab('map')}
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
+            mobileTab === 'map' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
+          }`}
+        >
+          <Compass className="w-4 h-4 mb-0.5" />
+          <span>Karte</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setMobileTab('deck');
+            setActiveRightTab('traffic');
+            setIsRightDeckCollapsed(false);
+          }}
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
+            mobileTab === 'deck' && activeRightTab === 'traffic' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
+          }`}
+        >
+          <Train className="w-4 h-4 mb-0.5" />
+          <span>ÖPNV</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setMobileTab('deck');
+            setActiveRightTab('schedules');
+            setIsRightDeckCollapsed(false);
+          }}
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
+            mobileTab === 'deck' && activeRightTab === 'schedules' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
+          }`}
+        >
+          <Calendar className="w-4 h-4 mb-0.5" />
+          <span>Fahrplan</span>
+        </button>
+
+        <button
+          onClick={() => setIsMobileSidebarOpen(true)}
+          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer transition-colors"
+        >
+          <Layers className="w-4 h-4 mb-0.5" />
+          <span>Layer</span>
+        </button>
+
+        <button
+          onClick={() => setIsOpsAdminOpen(true)}
+          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono text-accent font-bold cursor-pointer transition-colors"
+        >
+          <span className="text-xs mb-0.5 font-bold">⚡</span>
+          <span>OPS</span>
+        </button>
+      </nav>
+
       {/* Modals */}
       <WebcamViewerModal
         webcam={activeWebcamModal}
@@ -519,6 +667,7 @@ export const App: React.FC = () => {
         onSelectMarker={handleSelectMarker}
         onSelectPreset={handleSelectPreset}
         onOpenLinklist={() => setIsLinklistOpen(true)}
+        onOpenAdmin={() => setIsOpsAdminOpen(true)}
         activeCity={activeCity}
       />
 
@@ -531,6 +680,12 @@ export const App: React.FC = () => {
       <GlossaryModal
         isOpen={isGlossaryOpen}
         onClose={() => setIsGlossaryOpen(false)}
+      />
+
+      <AdminDashboardModal
+        isOpen={isOpsAdminOpen}
+        onClose={() => setIsOpsAdminOpen(false)}
+        activeCity={activeCity}
       />
     </div>
   );

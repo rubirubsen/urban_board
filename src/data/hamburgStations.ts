@@ -54,8 +54,13 @@ export const ALL_HAMBURG_STATIONS: TransitStop[] = [
   { id: 'hh-dammtor', name: 'Hamburg Dammtor (Messe/CCH)', type: 'Fern-/Regional- • S2/S5', lat: 53.5607, lng: 9.9895 },
   { id: 'hh-rothenburgsort', name: 'Rothenburgsort', type: 'S-Bahn S2', lat: 53.5355, lng: 10.0430 },
   { id: 'hh-tiefstack', name: 'Tiefstack', type: 'S-Bahn S2', lat: 53.5270, lng: 10.0630 },
+  { id: 'hh-billwerder-moorfleet', name: 'Billwerder-Moorfleet', type: 'S-Bahn S2', lat: 53.5180, lng: 10.1020 },
+  { id: 'hh-mittlerer-landweg', name: 'Mittlerer Landweg', type: 'S-Bahn S2', lat: 53.5080, lng: 10.1380 },
+  { id: 'hh-allermoehe', name: 'Allermöhe', type: 'S-Bahn S2', lat: 53.4980, lng: 10.1650 },
+  { id: 'hh-nettelnburg', name: 'Nettelnburg', type: 'S-Bahn S2', lat: 53.4920, lng: 10.1850 },
   { id: 'hh-bergedorf', name: 'Hamburg-Bergedorf', type: 'Regional- • S2', lat: 53.4892, lng: 10.2085 },
   { id: 'hh-reinbek', name: 'Reinbek', type: 'S-Bahn S2', lat: 53.5080, lng: 10.2480 },
+  { id: 'hh-wohltorf', name: 'Wohltorf', type: 'S-Bahn S2', lat: 53.5210, lng: 10.2780 },
   { id: 'hh-aumuehle', name: 'Aumühle (Sachsenwald)', type: 'S-Bahn S2', lat: 53.5310, lng: 10.3150 },
 
   // --- S-BAHN S3 & S5 (PINNEBERG / ELBGAUSTR. ⇄ HARBURG ⇄ BUXTEHUDE ⇄ STADE) ---

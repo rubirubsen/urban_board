@@ -11,6 +11,7 @@ interface CommandPaletteProps {
   onSelectMarker: (marker: GeoLocation) => void;
   onSelectPreset: (preset: OverpassPreset) => void;
   onOpenLinklist: () => void;
+  onOpenAdmin?: () => void;
   activeCity?: 'H' | 'HH';
 }
 
@@ -20,6 +21,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onSelectMarker,
   onSelectPreset,
   onOpenLinklist,
+  onOpenAdmin,
   activeCity = 'H'
 }) => {
   const [query, setQuery] = useState('');
@@ -94,19 +96,37 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             <div className="text-[10px] font-bold text-anthrazit-500 uppercase px-2 mb-1.5">
               Direkt-Aktionen ({activeCity === 'HH' ? 'Hamburg' : 'Hannover'})
             </div>
-            <button
-              onClick={() => {
-                onOpenLinklist();
-                onClose();
-              }}
-              className="w-full flex items-center justify-between p-2 rounded hover:bg-anthrazit-850 text-xs text-anthrazit-200 transition-colors text-left cursor-pointer"
-            >
-              <div className="flex items-center space-x-2.5">
-                <Bookmark className="w-3.5 h-3.5 text-accent" />
-                <span>{activeCity === 'HH' ? 'Hamburg OSINT Linkliste & Datenquellen öffnen' : 'Hannover OSINT Linkliste & Datenquellen öffnen'}</span>
-              </div>
-              <ArrowRight className="w-3.5 h-3.5 text-anthrazit-500" />
-            </button>
+            <div className="space-y-1">
+              {onOpenAdmin && (
+                <button
+                  onClick={() => {
+                    onOpenAdmin();
+                    onClose();
+                  }}
+                  className="w-full flex items-center justify-between p-2 rounded hover:bg-accent/10 border border-accent/30 text-xs text-accent transition-colors text-left cursor-pointer"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <span className="font-bold">⚡</span>
+                    <span className="font-bold">Ops & Admin Command Center öffnen (Milestones, Datasets, VPS)</span>
+                  </div>
+                  <span className="text-[10px] text-accent font-bold px-1.5 py-0.5 rounded bg-accent/20">PW: 4dm1n</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  onOpenLinklist();
+                  onClose();
+                }}
+                className="w-full flex items-center justify-between p-2 rounded hover:bg-anthrazit-850 text-xs text-anthrazit-200 transition-colors text-left cursor-pointer"
+              >
+                <div className="flex items-center space-x-2.5">
+                  <Bookmark className="w-3.5 h-3.5 text-accent" />
+                  <span>{activeCity === 'HH' ? 'Hamburg OSINT Linkliste & Datenquellen öffnen' : 'Hannover OSINT Linkliste & Datenquellen öffnen'}</span>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-anthrazit-500" />
+              </button>
+            </div>
           </div>
 
           {/* Station Results */}

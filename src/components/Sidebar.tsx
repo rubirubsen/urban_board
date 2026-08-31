@@ -7,8 +7,9 @@ import {
   Layers, 
   Eye, 
   EyeOff,
-  Crosshair,
-  Code2
+  Crosshair, 
+  Code2,
+  X
 } from 'lucide-react';
 import { CategoryType } from '../types';
 
@@ -25,6 +26,8 @@ interface SidebarProps {
   onToggleLayer: (layer: keyof SidebarProps['activeLayers']) => void;
   onCenterCity: () => void;
   onOpenOverpass: () => void;
+  isOpenMobile?: boolean;
+  onCloseMobile?: () => void;
   activeCity?: 'H' | 'HH';
   categoryCounts?: Partial<Record<CategoryType, number>>;
 }
@@ -36,6 +39,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleLayer,
   onCenterCity,
   onOpenOverpass,
+  isOpenMobile = false,
+  onCloseMobile,
   activeCity = 'H',
   categoryCounts
 }) => {
@@ -57,12 +62,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
       count: counts.iot 
     },
     { id: 'security' as CategoryType, label: 'Kritische Infrastruktur', icon: ShieldAlert, count: counts.security },
-    { id: 'cyber' as CategoryType, label: 'Cyber & Shodan Recon', icon: Globe, count: counts.cyber },
+    { id: 'cyber' as CategoryType, label: 'Cyber & Recon', icon: Globe, count: counts.cyber },
   ];
 
-  return (
-    <aside className="w-64 border-r border-anthrazit-800 bg-anthrazit-900/90 dark:bg-anthrazit-950/90 flex flex-col justify-between shrink-0 select-none overflow-y-auto">
-      <div className="p-3 space-y-5">
+  const sidebarContent = (
+    <div className="h-full flex flex-col justify-between select-none overflow-y-auto">
+      <div className="p-3 space-y-4">
+        {/* Mobile Header with Close Button */}
+        <div className="flex md:hidden items-center justify-between pb-2 border-b border-anthrazit-800">
+          <span className="font-bold text-xs text-anthrazit-100 uppercase tracking-wide">
+            OSINT Sektoren & Layer
+          </span>
+          <button
+            onClick={onCloseMobile}
+            className="p-1 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-100 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
         {/* Sektor-Navigation */}
         <div>
           <div className="text-[10px] font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-2 mb-2 flex items-center justify-between">
@@ -223,6 +241,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
           HBOARD Urban OSINT Engine v0.1
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Fixed Sidebar */}
+      <aside className="hidden md:flex md:w-64 border-r border-anthrazit-800 bg-anthrazit-900/90 dark:bg-anthrazit-950/90 shrink-0 select-none overflow-hidden">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Drawer (Slide-out Overlay) */}
+      {isOpenMobile && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div 
+            className="fixed inset-0 bg-anthrazit-950/80 backdrop-blur-sm transition-opacity" 
+            onClick={onCloseMobile}
+          />
+          <aside className="relative w-72 max-w-[85vw] h-full border-r border-anthrazit-700 bg-anthrazit-900/98 shadow-2xl z-10">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 };

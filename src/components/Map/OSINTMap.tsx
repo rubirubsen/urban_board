@@ -17,6 +17,7 @@ interface OSINTMapProps {
   onClearRoute?: () => void;
   onOpenWebcam?: (marker: GeoLocation) => void;
   onMapReady?: (mapInstance: L.Map) => void;
+  onSelectStationStop?: (stopName: string, lat: number, lng: number, lineName: string) => void;
 }
 
 export const OSINTMap: React.FC<OSINTMapProps> = ({
@@ -30,7 +31,8 @@ export const OSINTMap: React.FC<OSINTMapProps> = ({
   activeRoute = null,
   onClearRoute,
   onOpenWebcam,
-  onMapReady
+  onMapReady,
+  onSelectStationStop
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -50,6 +52,22 @@ export const OSINTMap: React.FC<OSINTMapProps> = ({
     lng: HANNOVER_COORDINATES[1],
     zoom: 13
   });
+
+  useEffect(() => {
+    (window as any).__triggerSelectStationStop = (stopNameEncoded: string, lat: number, lng: number, lineNameEncoded: string) => {
+      const stopName = decodeURIComponent(stopNameEncoded);
+      const lineName = decodeURIComponent(lineNameEncoded);
+      onSelectStationStop?.(stopName, lat, lng, lineName);
+    };
+    (window as any).__triggerSelectMarker = (markerId: string) => {
+      const match = markers.find(m => m.id === markerId);
+      if (match) onSelectMarker(match);
+    };
+    return () => {
+      delete (window as any).__triggerSelectStationStop;
+      delete (window as any).__triggerSelectMarker;
+    };
+  }, [markers, onSelectStationStop, onSelectMarker]);
 
   const getTileConfig = (provider: MapTileProvider) => {
     switch (provider) {
@@ -300,7 +318,7 @@ export const OSINTMap: React.FC<OSINTMapProps> = ({
     latLngs.forEach((coord, idx) => {
       const stopName = activeRoute.stops[idx] || `Halt #${idx + 1}`;
       const stopMarker = L.circleMarker(coord, {
-        radius: 5,
+        radius: 6,
         fillColor: '#ff8000',
         color: '#ffffff',
         weight: 2,
@@ -311,6 +329,31 @@ export const OSINTMap: React.FC<OSINTMapProps> = ({
       stopMarker.bindTooltip(`<strong>${activeRoute.name}</strong>: ${stopName}`, {
         direction: 'top',
         className: 'osint-route-tooltip'
+      });
+
+      const popupHtml = `
+        <div style="min-width: 220px; font-family: monospace; padding: 2px;">
+          <div style="border-bottom: 1px solid #3c4552; padding-bottom: 6px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px;">
+              <span style="font-size: 10px; padding: 2px 6px; border-radius: 3px; background: #ff8000; color: #0f1114; font-weight: 700;">
+                ${activeRoute.name}
+              </span>
+              <span style="font-size: 9px; color: #8b949e; text-transform: uppercase;">Linien-Halt</span>
+            </div>
+            <h4 style="font-weight: 700; font-size: 13px; margin: 4px 0 0 0; color: #f0f6fc;">${stopName}</h4>
+          </div>
+          <button onclick="window.__triggerSelectStationStop('${encodeURIComponent(stopName).replace(/'/g, "\\'")}', ${coord[0]}, ${coord[1]}, '${encodeURIComponent(activeRoute.name).replace(/'/g, "\\'")}')" style="width: 100%; padding: 6px 10px; border-radius: 4px; background: #ff8000; color: #0f1114; font-weight: 700; font-size: 11px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            ⏱️ Echtzeit-Abfahrten aufrufen
+          </button>
+        </div>
+      `;
+
+      stopMarker.bindPopup(popupHtml);
+
+      stopMarker.on('click', () => {
+        if (onSelectStationStop) {
+          onSelectStationStop(stopName, coord[0], coord[1], activeRoute.name);
+        }
       });
 
       routeLayerGroupRef.current?.addLayer(stopMarker);
@@ -378,6 +421,12 @@ export const OSINTMap: React.FC<OSINTMapProps> = ({
           ${isWebcam ? `
             <button id="btn-webcam-${marker.id}" style="width: 100%; padding: 6px 10px; border-radius: 4px; background: #ff8000; color: #0f1114; font-weight: 700; font-size: 11px; cursor: pointer; border: none; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;">
               📹 Live-Webcam Snapshot öffnen
+            </button>
+          ` : ''}
+
+          ${marker.type === 'transit' ? `
+            <button onclick="window.__triggerSelectMarker('${marker.id}')" style="width: 100%; padding: 6px 10px; border-radius: 4px; background: #ff8000; color: #0f1114; font-weight: 700; font-size: 11px; cursor: pointer; border: none; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              ⏱️ Echtzeit-Abfahrten aufrufen
             </button>
           ` : ''}
 

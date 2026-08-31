@@ -6,7 +6,8 @@ import {
   Bookmark,
   Layers,
   Clock,
-  HelpCircle
+  HelpCircle,
+  Menu
 } from 'lucide-react';
 import { ThemeMode } from '../types';
 
@@ -21,6 +22,8 @@ interface HeaderProps {
   onOpenSearch: () => void;
   onOpenLinklist: () => void;
   onOpenGlossary: () => void;
+  onOpenAdmin?: () => void;
+  onToggleMobileSidebar?: () => void;
   activeMarkerCount: number;
 }
 
@@ -35,6 +38,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSearch,
   onOpenLinklist,
   onOpenGlossary,
+  onOpenAdmin,
+  onToggleMobileSidebar,
   activeMarkerCount
 }) => {
   const [time, setTime] = useState({
@@ -61,7 +66,16 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="h-14 border-b border-anthrazit-800 bg-anthrazit-900/95 dark:bg-anthrazit-950/95 backdrop-blur-md px-4 flex items-center justify-between z-30 select-none">
       {/* Brand & City Indicator with HH Knopf */}
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        {onToggleMobileSidebar && (
+          <button
+            onClick={onToggleMobileSidebar}
+            className="md:hidden p-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700 text-accent cursor-pointer"
+            title="Sektoren & Layer öffnen"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        )}
         <div className="flex items-center justify-center w-8 h-8 rounded bg-anthrazit-850 border border-accent/40 text-accent font-mono font-bold text-base shadow-accent-sm">
           ⬡
         </div>
@@ -143,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
       </div>
 
-      {/* Right Actions: District Select, Glossary, Linklist, Theme Toggle */}
+      {/* Right Actions: District Select, Admin, Glossary, Linklist, Theme Toggle */}
       <div className="flex items-center space-x-2">
         {/* District Filter Dropdown */}
         <div className="flex items-center">
@@ -161,20 +175,29 @@ export const Header: React.FC<HeaderProps> = ({
           </select>
         </div>
 
+        {/* Admin / Ops Hub Trigger */}
+        <button
+          onClick={onOpenAdmin}
+          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-accent/15 hover:bg-accent/25 border border-accent/50 text-xs font-mono text-accent transition-colors cursor-pointer shadow-sm"
+          title="Admin & Operations Dashboard öffnen (PW: 4dm1n)"
+        >
+          <span className="font-bold">⚡ OPS</span>
+        </button>
+
         {/* Glossary & Beginner Help Modal Trigger */}
         <button
           onClick={onOpenGlossary}
-          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-accent/40 text-xs font-mono text-accent transition-colors cursor-pointer"
+          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
           title="Glossar & Erklärungen für Einsteiger öffnen"
         >
           <HelpCircle className="w-3.5 h-3.5 text-accent" />
-          <span className="hidden sm:inline font-bold">Hilfe & Glossar</span>
+          <span className="hidden sm:inline">Hilfe</span>
         </button>
 
         {/* Linkliste Modal Trigger */}
         <button
           onClick={onOpenLinklist}
-          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-200 transition-colors cursor-pointer"
+          className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 border border-anthrazit-700/70 text-xs font-mono text-anthrazit-300 hover:text-anthrazit-100 transition-colors cursor-pointer"
           title="Hannover OSINT Linkliste & Quellen öffnen"
         >
           <Bookmark className="w-3.5 h-3.5 text-accent" />

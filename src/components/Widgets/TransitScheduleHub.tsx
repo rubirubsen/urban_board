@@ -12,10 +12,13 @@ import {
   FileText
 } from 'lucide-react';
 
+import { TransitStop } from '../../services/apiService';
+
 interface TransitScheduleHubProps {
   activeRoute?: TransitLineRoute | null;
   onSelectRoute?: (route: TransitLineRoute | null) => void;
   onSelectStationOnMap?: (lat: number, lng: number, name: string) => void;
+  onSelectStationForLiveDepartures?: (station: TransitStop) => void;
   activeCity?: 'H' | 'HH';
 }
 
@@ -23,6 +26,7 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
   activeRoute: _activeRoute,
   onSelectRoute,
   onSelectStationOnMap,
+  onSelectStationForLiveDepartures,
   activeCity = 'H'
 }) => {
   const isHamburg = activeCity === 'HH';
@@ -292,22 +296,54 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
               const isDestination = idx === activeDir.stops.length - 1;
               const isSelected = activeStationName === stop.stopName;
 
+              const handleStopClick = async () => {
+                setActiveStationName(stop.stopName);
+                if (isHamburg) {
+                  const { ALL_HAMBURG_STATIONS } = await import('../../data/hamburgStations');
+                  const match = ALL_HAMBURG_STATIONS.find(s => 
+                    s.name.toLowerCase().includes(stop.stopName.toLowerCase()) ||
+                    stop.stopName.toLowerCase().includes(s.name.toLowerCase())
+                  );
+                  if (match) {
+                    onSelectStationOnMap?.(match.lat, match.lng, match.name);
+                    onSelectStationForLiveDepartures?.(match);
+                  } else {
+                    const fallbackStop: TransitStop = {
+                      id: `hh-${stop.stopName.toLowerCase().replace(/\s+/g, '-')}`,
+                      name: stop.stopName,
+                      lat: 53.5511,
+                      lng: 9.9937,
+                      type: activeSchedule.lineName
+                    };
+                    onSelectStationForLiveDepartures?.(fallbackStop);
+                  }
+                } else {
+                  const { ALL_HANNOVER_STATIONS } = await import('../../data/hannoverStations');
+                  const match = ALL_HANNOVER_STATIONS.find(s => 
+                    s.name.toLowerCase().includes(stop.stopName.toLowerCase()) ||
+                    stop.stopName.toLowerCase().includes(s.name.toLowerCase())
+                  );
+                  if (match) {
+                    onSelectStationOnMap?.(match.lat, match.lng, match.name);
+                    onSelectStationForLiveDepartures?.(match);
+                  } else {
+                    const fallbackStop: TransitStop = {
+                      id: `hn-${stop.stopName.toLowerCase().replace(/\s+/g, '-')}`,
+                      name: stop.stopName,
+                      lat: 52.3759,
+                      lng: 9.7320,
+                      type: activeSchedule.lineName
+                    };
+                    onSelectStationForLiveDepartures?.(fallbackStop);
+                  }
+                }
+              };
+
               return (
                 <div
                   key={stop.stopName + idx}
-                  onClick={() => {
-                    setActiveStationName(stop.stopName);
-                    import('../../data/hannoverStations').then(({ ALL_HANNOVER_STATIONS }) => {
-                      const match = ALL_HANNOVER_STATIONS.find(s => 
-                        s.name.toLowerCase().includes(stop.stopName.toLowerCase()) ||
-                        stop.stopName.toLowerCase().includes(s.name.toLowerCase())
-                      );
-                      if (match && onSelectStationOnMap) {
-                        onSelectStationOnMap(match.lat, match.lng, match.name);
-                      }
-                    });
-                  }}
-                  className={`p-2 rounded border transition-colors cursor-pointer flex items-center justify-between w-full ${
+                  onClick={handleStopClick}
+                  className={`p-2 rounded border transition-colors cursor-pointer flex items-center justify-between w-full group ${
                     isSelected
                       ? 'bg-accent/15 border-accent text-accent font-bold shadow-sm'
                       : isOrigin || isDestination
@@ -338,10 +374,15 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0 pl-1">
-                    <span className="text-[11px] font-mono font-bold text-accent">
-                      +{stop.minuteOffset} Min.
-                    </span>
+                  <div className="text-right shrink-0 pl-1 flex flex-col items-end">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="text-[11px] font-mono font-bold text-accent">
+                        +{stop.minuteOffset} Min.
+                      </span>
+                      <span className="text-[9px] px-1 py-0.5 rounded bg-accent/20 text-accent font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                        ⏱️ Live
+                      </span>
+                    </div>
                     {stop.isHighPlatform === false ? (
                       <span className="text-[9px] text-amber-400 block" title="Nicht barrierefrei">
                         ♿ Nicht stufenlos
