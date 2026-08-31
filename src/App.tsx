@@ -90,12 +90,12 @@ export const App: React.FC = () => {
   // Overpass Live Elements rendered on Map
   const [overpassLiveElements, setOverpassLiveElements] = useState<OverpassLiveElement[]>([]);
 
-  // Active Map Layers
+  // Active Map Layers (default: all disabled for a clean initial OSINT map view)
   const [activeLayers, setActiveLayers] = useState({
-    webcams: true,
-    iotSensors: true,
-    mobility: true,
-    infra: true,
+    webcams: false,
+    iotSensors: false,
+    mobility: false,
+    infra: false,
     gridOverlay: false,
   });
 
