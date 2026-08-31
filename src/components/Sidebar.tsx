@@ -9,7 +9,11 @@ import {
   EyeOff,
   Crosshair, 
   Code2,
-  X
+  X,
+  Compass,
+  Train,
+  Calendar,
+  Zap
 } from 'lucide-react';
 import { CategoryType } from '../types';
 
@@ -28,6 +32,8 @@ interface SidebarProps {
   onOpenOverpass: () => void;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
+  onSelectMobileView?: (view: 'map' | 'traffic' | 'schedules' | 'telemetry' | 'cyber' | 'admin') => void;
+  activeMobileView?: string;
   activeCity?: 'H' | 'HH';
   categoryCounts?: Partial<Record<CategoryType, number>>;
 }
@@ -41,6 +47,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenOverpass,
   isOpenMobile = false,
   onCloseMobile,
+  onSelectMobileView,
+  activeMobileView = 'map',
   activeCity = 'H',
   categoryCounts
 }) => {
@@ -70,16 +78,73 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-3 space-y-4">
         {/* Mobile Header with Close Button */}
         <div className="flex md:hidden items-center justify-between pb-2 border-b border-anthrazit-800">
-          <span className="font-bold text-xs text-anthrazit-100 uppercase tracking-wide">
-            OSINT Sektoren & Layer
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="font-mono font-bold text-xs text-accent">⬡ HBOARD</span>
+            <span className="text-[10px] text-anthrazit-400 font-mono uppercase">
+              {activeCity === 'HH' ? 'Hamburg' : 'Hannover'}
+            </span>
+          </div>
           <button
             onClick={onCloseMobile}
-            className="p-1 rounded hover:bg-anthrazit-800 text-anthrazit-400 hover:text-anthrazit-100 cursor-pointer"
+            className="p-1.5 rounded bg-anthrazit-850 hover:bg-anthrazit-800 text-anthrazit-300 hover:text-anthrazit-100 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Mobile Primary View Navigation (Fast switching on iPhone/Tablet) */}
+        {onSelectMobileView && (
+          <div className="md:hidden space-y-2">
+            <div className="text-[10px] font-mono font-bold tracking-wider text-anthrazit-400 uppercase px-1">
+              Haupt-Ansichten
+            </div>
+            <div className="grid grid-cols-2 gap-1.5 font-mono text-xs">
+              <button
+                onClick={() => onSelectMobileView('map')}
+                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                  activeMobileView === 'map'
+                    ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
+                    : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
+                }`}
+              >
+                <Compass className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">🗺️ Karte</span>
+              </button>
+
+              <button
+                onClick={() => onSelectMobileView('traffic')}
+                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                  activeMobileView === 'traffic'
+                    ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
+                    : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
+                }`}
+              >
+                <Train className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">🚆 ÖPNV Live</span>
+              </button>
+
+              <button
+                onClick={() => onSelectMobileView('schedules')}
+                className={`py-2 px-2.5 rounded flex items-center space-x-2 border transition-colors cursor-pointer ${
+                  activeMobileView === 'schedules'
+                    ? 'bg-accent text-anthrazit-950 font-bold border-accent shadow-sm'
+                    : 'bg-anthrazit-850 border-anthrazit-750 text-anthrazit-200 hover:bg-anthrazit-800'
+                }`}
+              >
+                <Calendar className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">📅 Fahrplan</span>
+              </button>
+
+              <button
+                onClick={() => onSelectMobileView('admin')}
+                className="py-2 px-2.5 rounded flex items-center space-x-2 border border-accent/40 bg-anthrazit-850 hover:bg-anthrazit-800 text-accent font-bold cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5 shrink-0 text-accent" />
+                <span className="truncate">⚡ OPS Center</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Sektor-Navigation */}
         <div>

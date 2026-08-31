@@ -55,8 +55,7 @@ import {
   Calendar,
   Camera,
   ExternalLink,
-  Compass,
-  Layers
+  Compass
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -310,7 +309,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`h-screen w-screen flex flex-col overflow-hidden ${theme === 'dark' ? 'dark bg-anthrazit-950 text-anthrazit-100' : 'light bg-anthrazit-50 text-anthrazit-900'}`}>
+    <div className={`h-[100dvh] w-screen flex flex-col overflow-hidden ${theme === 'dark' ? 'dark bg-anthrazit-950 text-anthrazit-100' : 'light bg-anthrazit-50 text-anthrazit-900'}`}>
       {/* Header */}
       <Header
         theme={theme}
@@ -330,7 +329,7 @@ export const App: React.FC = () => {
 
       {/* Main Workspace Layout: Sidebar | Map | Right Widget Deck */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Left Navigation Sidebar */}
+        {/* Left Navigation Sidebar (Desktop fixed + Mobile slide-out drawer) */}
         <Sidebar
           activeCategory={activeCategory}
           onSelectCategory={(cat) => {
@@ -351,12 +350,49 @@ export const App: React.FC = () => {
           }}
           isOpenMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          onSelectMobileView={(view) => {
+            if (view === 'map') {
+              setMobileTab('map');
+            } else if (view === 'traffic') {
+              setMobileTab('deck');
+              setActiveRightTab('traffic');
+              setIsRightDeckCollapsed(false);
+            } else if (view === 'schedules') {
+              setMobileTab('deck');
+              setActiveRightTab('schedules');
+              setIsRightDeckCollapsed(false);
+            } else if (view === 'telemetry') {
+              setMobileTab('deck');
+              setActiveRightTab('telemetry');
+              setIsRightDeckCollapsed(false);
+            } else if (view === 'cyber') {
+              setMobileTab('deck');
+              setActiveRightTab('cyber');
+              setIsRightDeckCollapsed(false);
+            } else if (view === 'admin') {
+              setIsOpsAdminOpen(true);
+            }
+            setIsMobileSidebarOpen(false);
+          }}
+          activeMobileView={mobileTab === 'map' ? 'map' : activeRightTab}
           activeCity={activeCity}
           categoryCounts={categoryCounts}
         />
 
         {/* Center: Full-height Leaflet OSINT Map with Route Polyline & Overpass Elements */}
         <main className={`flex-1 relative h-full bg-anthrazit-950 ${mobileTab === 'map' ? 'flex' : 'hidden md:flex'}`}>
+          {/* Mobile Floating Menu Trigger on Map */}
+          <div className="absolute top-3 left-3 z-[1000] md:hidden flex items-center space-x-2 pointer-events-auto">
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="py-1.5 px-3 rounded-md bg-anthrazit-950/90 hover:bg-anthrazit-900 text-accent border border-accent/40 shadow-xl backdrop-blur-md font-mono text-xs font-bold flex items-center space-x-1.5 cursor-pointer active:scale-95 transition-transform"
+              title="Menü & Layer öffnen"
+            >
+              <span>☰</span>
+              <span>MENÜ & LAYER</span>
+            </button>
+          </div>
+
           <OSINTMap
             markers={filteredMarkers}
             theme={theme}
@@ -594,63 +630,6 @@ export const App: React.FC = () => {
           )}
         </aside>
       </div>
-
-      {/* Mobile Bottom Navigation Bar (< md) */}
-      <nav className={`h-14 border-t ${theme === 'dark' ? 'border-anthrazit-800 bg-anthrazit-950/95' : 'border-anthrazit-300 bg-anthrazit-100/95'} backdrop-blur-md md:hidden flex items-center justify-around px-2 z-30 shrink-0 select-none pb-safe`}>
-        <button
-          onClick={() => setMobileTab('map')}
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
-            mobileTab === 'map' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
-          }`}
-        >
-          <Compass className="w-4 h-4 mb-0.5" />
-          <span>Karte</span>
-        </button>
-
-        <button
-          onClick={() => {
-            setMobileTab('deck');
-            setActiveRightTab('traffic');
-            setIsRightDeckCollapsed(false);
-          }}
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
-            mobileTab === 'deck' && activeRightTab === 'traffic' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
-          }`}
-        >
-          <Train className="w-4 h-4 mb-0.5" />
-          <span>ÖPNV</span>
-        </button>
-
-        <button
-          onClick={() => {
-            setMobileTab('deck');
-            setActiveRightTab('schedules');
-            setIsRightDeckCollapsed(false);
-          }}
-          className={`flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono cursor-pointer transition-colors ${
-            mobileTab === 'deck' && activeRightTab === 'schedules' ? 'text-accent font-bold' : 'text-anthrazit-400 hover:text-anthrazit-200'
-          }`}
-        >
-          <Calendar className="w-4 h-4 mb-0.5" />
-          <span>Fahrplan</span>
-        </button>
-
-        <button
-          onClick={() => setIsMobileSidebarOpen(true)}
-          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono text-anthrazit-400 hover:text-anthrazit-200 cursor-pointer transition-colors"
-        >
-          <Layers className="w-4 h-4 mb-0.5" />
-          <span>Layer</span>
-        </button>
-
-        <button
-          onClick={() => setIsOpsAdminOpen(true)}
-          className="flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-mono text-accent font-bold cursor-pointer transition-colors"
-        >
-          <span className="text-xs mb-0.5 font-bold">⚡</span>
-          <span>OPS</span>
-        </button>
-      </nav>
 
       {/* Modals */}
       <WebcamViewerModal
