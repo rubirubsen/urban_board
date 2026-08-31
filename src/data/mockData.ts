@@ -622,16 +622,15 @@ export const HAMBURG_OVERPASS_PRESETS: OverpassPreset[] = [
   {
     id: 'hh-op-cctv',
     title: 'Überwachungskameras & Hafen-CCTV',
-    description: 'Findet alle in OpenStreetMap kartierten Überwachungskameras im Stadtstaat Hamburg.',
-    howItWorks: 'Durchsucht OpenStreetMap nach Objekten mit "man_made=surveillance" in Hamburg (Polizei, HPA-Hafenüberwachung, Hochbahn).',
-    keyTags: ['man_made=surveillance', 'surveillance:type=*'],
+    description: 'Findet alle in OpenStreetMap kartierten Überwachungskameras im Großraum Hamburg.',
+    howItWorks: 'Durchsucht OpenStreetMap nach Objekten mit "man_made=surveillance" in Hamburg (Polizei, HPA-Hafenüberwachung, Hochbahn, Tankstellen & Banken).',
+    keyTags: ['man_made=surveillance', 'surveillance:type=*', 'camera:type=*'],
     category: 'Sicherheit',
     icon: 'Camera',
     query: `[out:json][timeout:25];
-area["name"="Hamburg"]["admin_level"="4"]->.searchArea;
 (
-  node["man_made"="surveillance"](area.searchArea);
-  way["man_made"="surveillance"](area.searchArea);
+  node["man_made"="surveillance"](53.38,9.70,53.75,10.35);
+  way["man_made"="surveillance"](53.38,9.70,53.75,10.35);
 );
 out body center;
 >;
@@ -639,18 +638,17 @@ out skel qt;`
   },
   {
     id: 'hh-op-power',
-    title: 'Strominfrastruktur & Hafen-Umspannwerke',
-    description: 'Findet Umspannwerke, Generatoren und Netzknoten von Stromnetz Hamburg.',
-    howItWorks: 'Filtert nach "power=substation" und "power=plant" im Hamburger Stadtgebiet.',
-    keyTags: ['power=substation', 'power=plant'],
+    title: 'Strominfrastruktur & Umspannwerke (110kV/380kV)',
+    description: 'Findet Umspannwerke, Transformatoren und Netzknoten von Stromnetz Hamburg & 50Hertz/TenneT.',
+    howItWorks: 'Filtert nach "power=substation" und "power=plant" (z. B. Kraftwerk Tiefstack, Moorburg, Umspannwerk Hamburg-Nord/Barmbek).',
+    keyTags: ['power=substation', 'power=plant', 'power=transformer'],
     category: 'Infrastruktur',
     icon: 'Zap',
     query: `[out:json][timeout:25];
-area["name"="Hamburg"]["admin_level"="4"]->.searchArea;
 (
-  node["power"="substation"](area.searchArea);
-  way["power"="substation"](area.searchArea);
-  node["power"="plant"](area.searchArea);
+  node["power"="substation"](53.38,9.70,53.75,10.35);
+  way["power"="substation"](53.38,9.70,53.75,10.35);
+  node["power"="plant"](53.38,9.70,53.75,10.35);
 );
 out body center;
 >;
@@ -658,18 +656,37 @@ out skel qt;`
   },
   {
     id: 'hh-op-emergency',
-    title: 'Notfallinfrastruktur & BOS Hamburg',
-    description: 'Findet Berufsfeuerwachen, Notaufnahmen und Rettungswachen der Feuerwehr Hamburg.',
-    howItWorks: 'Sucht nach "amenity=hospital", "amenity=fire_station" und "emergency=defibrillator" im Raum Hamburg.',
-    keyTags: ['amenity=hospital', 'amenity=fire_station'],
+    title: 'BOS, Berufsfeuerwehr & Notfall-Infrastruktur',
+    description: 'Findet Berufsfeuerwachen, Wasserschutzpolizei, Notaufnahmen und Rettungshubschrauber-Landeplätze.',
+    howItWorks: 'Sucht nach Feuerwachen der Feuerwehr Hamburg ("amenity=fire_station"), Polizeikommissariaten, Kliniken mit Notaufnahme ("emergency=emergency_ward_service") und Hubschrauberlandeplätzen (Christoph 29 / SAR).',
+    keyTags: ['amenity=fire_station', 'amenity=police', 'emergency=helipad'],
     category: 'BOS / Rettung',
     icon: 'ShieldAlert',
     query: `[out:json][timeout:25];
-area["name"="Hamburg"]["admin_level"="4"]->.searchArea;
 (
-  node["amenity"="hospital"](area.searchArea);
-  node["amenity"="fire_station"](area.searchArea);
-  node["emergency"="defibrillator"](area.searchArea);
+  node["amenity"="fire_station"](53.38,9.70,53.75,10.35);
+  node["amenity"="police"](53.38,9.70,53.75,10.35);
+  node["amenity"="hospital"](53.38,9.70,53.75,10.35);
+  node["emergency"="helipad"](53.38,9.70,53.75,10.35);
+);
+out body center;
+>;
+out skel qt;`
+  },
+  {
+    id: 'hh-op-bunker',
+    title: 'Bunker & Zivilschutz-Anlagen Hamburg',
+    description: 'Kartiert historische Hochbunker, Zivilschutzanlagen und Tiefbunker im Stadtgebiet.',
+    howItWorks: 'Filtert nach "military=bunker", "bunker_type=*" und "building=bunker" (z. B. Flakbunker St. Pauli / Feldstraße, Tiefbunker Hbf & Berliner Tor).',
+    keyTags: ['military=bunker', 'bunker_type=*', 'building=bunker'],
+    category: 'Zivilschutz',
+    icon: 'ShieldAlert',
+    query: `[out:json][timeout:25];
+(
+  node["military"="bunker"](53.38,9.70,53.75,10.35);
+  way["military"="bunker"](53.38,9.70,53.75,10.35);
+  way["building"="bunker"](53.38,9.70,53.75,10.35);
+  node["bunker_type"](53.38,9.70,53.75,10.35);
 );
 out body center;
 >;
@@ -677,18 +694,35 @@ out skel qt;`
   },
   {
     id: 'hh-op-maritime',
-    title: 'Maritimer Hafen & Schleusen / Kaianlagen',
-    description: 'Findet Schleusen, Terminals, Hafenkräne und Leuchtfeuer im Hamburger Hafen.',
-    howItWorks: 'Sucht nach Hafen- und Wasserinfrastruktur ("waterway=lock_gate", "man_made=crane", "man_made=lighthouse").',
-    keyTags: ['waterway=lock_gate', 'man_made=crane'],
+    title: 'Hafen-Infrastruktur, Schleusen & Großkräne',
+    description: 'Findet Schleusen, Containerbrücken, Leuchtfeuer und Radartürme im Hamburger Hafen.',
+    howItWorks: 'Sucht nach Hafen- und Wasserbauinfrastruktur ("waterway=lock_gate", "man_made=crane", "man_made=lighthouse", "seamark:type=beacon").',
+    keyTags: ['waterway=lock_gate', 'man_made=crane', 'man_made=lighthouse'],
     category: 'Hafen / Maritim',
     icon: 'Radio',
     query: `[out:json][timeout:25];
-area["name"="Hamburg"]["admin_level"="4"]->.searchArea;
 (
-  node["waterway"="lock_gate"](area.searchArea);
-  node["man_made"="crane"](area.searchArea);
-  node["man_made"="lighthouse"](area.searchArea);
+  node["waterway"="lock_gate"](53.38,9.70,53.75,10.35);
+  node["man_made"="crane"](53.38,9.70,53.75,10.35);
+  node["man_made"="lighthouse"](53.38,9.70,53.75,10.35);
+  node["seamark:type"="beacon"](53.38,9.70,53.75,10.35);
+);
+out body center;
+>;
+out skel qt;`
+  },
+  {
+    id: 'hh-op-telecom',
+    title: 'Telekommunikation, Richtfunk & Heinrich-Hertz-Turm',
+    description: 'Findet Sendetürme, Richtfunkmasten und Telekom-Knoten im Stadtgebiet.',
+    howItWorks: 'Sucht nach Antennenmasten ("man_made=mast") und Fernmeldetürmen ("tower:type=communication", z. B. Heinrich-Hertz-Turm "Tele-Michel" & Lohbrügge).',
+    keyTags: ['man_made=mast', 'tower:type=communication'],
+    category: 'Telekom',
+    icon: 'Radio',
+    query: `[out:json][timeout:25];
+(
+  node["man_made"="mast"](53.38,9.70,53.75,10.35);
+  node["man_made"="tower"]["tower:type"="communication"](53.38,9.70,53.75,10.35);
 );
 out body center;
 >;

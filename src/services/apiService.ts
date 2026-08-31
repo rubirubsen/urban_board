@@ -397,18 +397,29 @@ export async function executeOverpassQuery(query: string) {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Accept': 'application/json'
         },
         body: `data=${encodeURIComponent(query)}`,
-        signal: AbortSignal.timeout(8000)
+        signal: AbortSignal.timeout(10000)
       });
 
       if (res.ok) {
-        const json = await res.json();
+        const text = await res.text();
+        if (!text.trim().startsWith('{') && !text.trim().startsWith('[')) continue;
+        const json = JSON.parse(text);
         if (json.elements && json.elements.length > 0) {
+          const elements = json.elements.map((el: any) => ({
+            id: el.id,
+            lat: el.lat ?? el.center?.lat ?? 0,
+            lon: el.lon ?? el.center?.lon ?? 0,
+            tags: el.tags || {},
+            type: el.type || 'node'
+          })).filter((el: any) => el.lat !== 0 && el.lon !== 0);
+
           return {
             success: true,
-            elements: json.elements
+            elements: elements
           };
         }
       }
