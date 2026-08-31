@@ -30,7 +30,7 @@ export const MobileLinePicker: React.FC<MobileLinePickerProps> = ({
   };
 
   return (
-    <div className="md:hidden absolute top-14 left-0 right-0 z-[1000] px-3 py-2 pointer-events-none">
+    <div className="md:hidden absolute top-2.5 left-0 right-0 z-[1000] px-3 py-1 pointer-events-none">
       <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar py-1 pointer-events-auto backdrop-blur-md bg-anthrazit-950/80 rounded-full border border-anthrazit-800/80 px-2 shadow-2xl">
         {/* Reset / All Lines Button */}
         <button

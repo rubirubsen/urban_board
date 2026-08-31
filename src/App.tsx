@@ -414,15 +414,17 @@ export const App: React.FC = () => {
 
         {/* Center: Full-height Leaflet OSINT Map with Route Polyline & Overpass Elements */}
         <main className={`flex-1 relative h-full bg-anthrazit-950 ${mobileTab === 'map' ? 'flex' : 'hidden md:flex'}`}>
-          {/* Mobile Floating Menu Trigger on Map */}
-          <div className="absolute top-3 left-3 z-[1000] md:hidden flex items-center space-x-2 pointer-events-auto">
+          {/* Mobile Left-Edge Pull-out Capsule */}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 z-[1000] md:hidden pointer-events-auto">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="py-1.5 px-3 rounded-md bg-anthrazit-950/90 hover:bg-anthrazit-900 text-accent border border-accent/40 shadow-xl backdrop-blur-md font-mono text-xs font-bold flex items-center space-x-1.5 cursor-pointer active:scale-95 transition-transform"
-              title="Menü & Layer öffnen"
+              className="h-16 w-5 rounded-r-xl bg-anthrazit-950/90 hover:bg-anthrazit-900 text-accent border-r border-y border-accent/50 shadow-2xl backdrop-blur-md flex flex-col items-center justify-center space-y-1 cursor-pointer active:scale-95 transition-all group"
+              title="Sektoren, Layer & Haupt-Menü aufziehen"
             >
-              <span>☰</span>
-              <span>MENÜ & LAYER</span>
+              <span className="w-1 h-3.5 rounded-full bg-accent/80 group-hover:bg-accent animate-pulse" />
+              <span className="text-[9px] font-mono text-accent -rotate-90 origin-center select-none font-bold tracking-tighter">
+                OSINT
+              </span>
             </button>
           </div>
 
