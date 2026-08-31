@@ -234,10 +234,13 @@ export const App: React.FC = () => {
     };
   }, [customMarkers, activeCity]);
 
-  // Fly to Station on Map without adding persistent custom markers
+  // Fly to Station on Map with mobile bottom-sheet visible area offset
   const handleFlyToStation = (lat: number, lng: number, _name?: string) => {
     if (mapInstance) {
-      mapInstance.flyTo([lat, lng], 16, { duration: 0.8 });
+      const isMobile = window.innerWidth < 768;
+      // On mobile, offset latitude south by ~0.0035 deg so the marker lands in the top visible half above the sheet
+      const targetLat = isMobile ? lat - 0.0035 : lat;
+      mapInstance.flyTo([targetLat, lng], 16, { animate: true, duration: 0.8 });
     }
   };
 
@@ -272,16 +275,20 @@ export const App: React.FC = () => {
     setSelectedTransitStop(stopObj);
     handleFlyToStation(lat, lng, stopName);
     setActiveRightTab('traffic');
-    setIsRightDeckCollapsed(false);
-    setMobileTab('deck');
+    if (window.innerWidth >= 768) {
+      setIsRightDeckCollapsed(false);
+      setMobileTab('deck');
+    }
   };
 
   // Select a station stop from TransitScheduleHub timeline
   const handleSelectStationFromHub = (stop: TransitStop) => {
     setSelectedTransitStop(stop);
     setActiveRightTab('traffic');
-    setIsRightDeckCollapsed(false);
-    setMobileTab('deck');
+    if (window.innerWidth >= 768) {
+      setIsRightDeckCollapsed(false);
+      setMobileTab('deck');
+    }
   };
 
   // Toggle single layer

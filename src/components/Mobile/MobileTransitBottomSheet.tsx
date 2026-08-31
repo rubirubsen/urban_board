@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { LineSchedule, ScheduleStopItem } from '../../data/transitSchedules';
 import { TransitStop, LiveDeparture, fetchLiveDepartures } from '../../services/apiService';
+import { ALL_HAMBURG_STATIONS } from '../../data/hamburgStations';
+import { ALL_HANNOVER_STATIONS } from '../../data/hannoverStations';
+import { INITIAL_GEO_MARKERS, HAMBURG_GEO_MARKERS } from '../../data/mockData';
 import { 
   ChevronUp, 
   ChevronDown, 
@@ -13,6 +16,36 @@ import {
 } from 'lucide-react';
 
 export type BottomSheetSnap = 'peek' | 'half' | 'full';
+
+export const findStationCoords = (stationName: string, isHamburg: boolean): { lat: number; lng: number; id: string } => {
+  const stationList = isHamburg ? ALL_HAMBURG_STATIONS : ALL_HANNOVER_STATIONS;
+  const markerList = isHamburg ? HAMBURG_GEO_MARKERS : INITIAL_GEO_MARKERS;
+
+  // 1. Direct name match in stations
+  const exact = stationList.find(s => s.name.toLowerCase() === stationName.toLowerCase());
+  if (exact) return { lat: exact.lat, lng: exact.lng, id: exact.id };
+
+  // 2. Partial match in stations
+  const partial = stationList.find(s => 
+    s.name.toLowerCase().includes(stationName.toLowerCase()) || 
+    stationName.toLowerCase().includes(s.name.toLowerCase())
+  );
+  if (partial) return { lat: partial.lat, lng: partial.lng, id: partial.id };
+
+  // 3. Match in GeoMarkers (e.g. Kröpcke, Hbf, Landungsbrücken, etc.)
+  const markerMatch = markerList.find(m => 
+    m.name.toLowerCase().includes(stationName.toLowerCase()) ||
+    stationName.toLowerCase().includes(m.name.toLowerCase())
+  );
+  if (markerMatch) return { lat: markerMatch.lat, lng: markerMatch.lng, id: markerMatch.id };
+
+  // 4. Fallback default
+  return {
+    lat: isHamburg ? 53.5511 : 52.3759,
+    lng: isHamburg ? 9.9937 : 9.7320,
+    id: `${isHamburg ? 'hh' : 'hn'}-${stationName.toLowerCase().replace(/\s+/g, '-')}`
+  };
+};
 
 interface MobileTransitBottomSheetProps {
   activeCity: 'H' | 'HH';
@@ -318,16 +351,17 @@ export const MobileTransitBottomSheet: React.FC<MobileTransitBottomSheetProps> =
                     <div
                       key={`${stop.stopName}-${idx}`}
                       onClick={() => {
+                        const coords = findStationCoords(stop.stopName, isHamburg);
                         onFlyToStation(
-                          isHamburg ? 53.5511 : 52.3759,
-                          isHamburg ? 9.9937 : 9.7320,
+                          coords.lat,
+                          coords.lng,
                           stop.stopName
                         );
                         onSelectStation({
-                          id: `${isHamburg ? 'hh' : 'hn'}-${stop.stopName.toLowerCase().replace(/\s+/g, '-')}`,
+                          id: coords.id,
                           name: stop.stopName,
-                          lat: isHamburg ? 53.5511 : 52.3759,
-                          lng: isHamburg ? 9.9937 : 9.7320,
+                          lat: coords.lat,
+                          lng: coords.lng,
                           type: selectedSchedule.lineName
                         });
                       }}
