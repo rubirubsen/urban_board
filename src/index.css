@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #f6f8fa;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --border-color: #d0d7de;
+    --text-primary: #1f2328;
+    --text-muted: #656d76;
+    --accent: #ff8000;
+  }
+
+  .dark {
+    --bg-primary: #0d1117;
+    --bg-surface: #161b22;
+    --bg-card: #1c2128;
+    --border-color: #30363d;
+    --text-primary: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #ff8000;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Tactical Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c4552;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff8000;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Leaflet Customization for OSINT Tactical Look */
+.leaflet-container {
+  background: #0f1114 !important;
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #16191e !important;
+  color: #e6edf3 !important;
+  border: 1px solid #3c4552 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: #16191e !important;
+}
+
+.light .leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #1f2328 !important;
+  border: 1px solid #d0d7de !important;
+}
+
+.light .leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Map Grid Overlay for OSINT Look */
+.map-grid-overlay {
+  background-image: linear-gradient(to right, rgba(255, 128, 0, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 128, 0, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
