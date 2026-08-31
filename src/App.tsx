@@ -13,6 +13,8 @@ import { LinklistViewModal } from './components/Modals/LinklistViewModal';
 import { GlossaryModal } from './components/Modals/GlossaryModal';
 import { WebcamViewerModal } from './components/Modals/WebcamViewerModal';
 import { AdminDashboardModal } from './components/Modals/AdminDashboardModal';
+import { MobileLinePicker } from './components/Mobile/MobileLinePicker';
+import { MobileTransitBottomSheet } from './components/Mobile/MobileTransitBottomSheet';
 import { 
   ThemeMode, 
   CategoryType, 
@@ -20,7 +22,8 @@ import {
   OverpassPreset,
   OverpassLiveElement 
 } from './types';
-import { TransitLineRoute } from './data/transitRoutes';
+import { TransitLineRoute, HANNOVER_TRANSIT_ROUTES, HAMBURG_TRANSIT_ROUTES } from './data/transitRoutes';
+import { HANNOVER_SCHEDULES, HAMBURG_SCHEDULES, LineSchedule } from './data/transitSchedules';
 import { TransitStop } from './services/apiService';
 import { ALL_HANNOVER_STATIONS } from './data/hannoverStations';
 import { ALL_HAMBURG_STATIONS } from './data/hamburgStations';
@@ -77,6 +80,10 @@ export const App: React.FC = () => {
   // Active Line Route displayed on Map (e.g. Stadtbahn 1, 4, 5, 6, 10, S4, U1, U3, S1)
   const [activeRoute, setActiveRoute] = useState<TransitLineRoute | null>(null);
 
+  // Mobile Line & Schedule Selection
+  const [selectedMobileLineRef, setSelectedMobileLineRef] = useState<string | null>(null);
+  const [selectedLineSchedule, setSelectedLineSchedule] = useState<LineSchedule | null>(null);
+
   // Active Transit Stop for Real-time Departures (only populated on explicit click)
   const [selectedTransitStop, setSelectedTransitStop] = useState<TransitStop | null>(null);
 
@@ -121,10 +128,36 @@ export const App: React.FC = () => {
     setSelectedMarker(null);
     setSelectedTransitStop(null);
     setActiveRoute(null);
+    setSelectedMobileLineRef(null);
+    setSelectedLineSchedule(null);
     setOverpassLiveElements([]);
     if (mapInstance) {
       const coords = city === 'HH' ? HAMBURG_COORDINATES : HANNOVER_COORDINATES;
       mapInstance.flyTo(coords, 12, { animate: true, duration: 1.2 });
+    }
+  };
+
+  // Mobile Line Picker Selection Handler
+  const handleSelectMobileLine = (lineRef: string | null) => {
+    setSelectedMobileLineRef(lineRef);
+    if (!lineRef) {
+      setActiveRoute(null);
+      setSelectedLineSchedule(null);
+      return;
+    }
+
+    const routesMap = activeCity === 'HH' ? HAMBURG_TRANSIT_ROUTES : HANNOVER_TRANSIT_ROUTES;
+    const schedulesMap = activeCity === 'HH' ? HAMBURG_SCHEDULES : HANNOVER_SCHEDULES;
+
+    const route = routesMap[lineRef] || null;
+    const schedule = schedulesMap[lineRef] || null;
+
+    setActiveRoute(route);
+    setSelectedLineSchedule(schedule);
+
+    if (mapInstance && route && route.coordinates && route.coordinates.length > 0) {
+      const bounds = L.latLngBounds(route.coordinates as L.LatLngTuple[]);
+      mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
     }
   };
 
@@ -393,6 +426,14 @@ export const App: React.FC = () => {
             </button>
           </div>
 
+          {/* Mobile Horizontal Thumb-scrollable Line Carousel */}
+          <MobileLinePicker
+            activeCity={activeCity}
+            activeRoute={activeRoute}
+            selectedLineRef={selectedMobileLineRef}
+            onSelectLine={handleSelectMobileLine}
+          />
+
           <OSINTMap
             markers={filteredMarkers}
             theme={theme}
@@ -402,10 +443,27 @@ export const App: React.FC = () => {
             overpassLiveElements={overpassLiveElements}
             onClearOverpassElements={() => setOverpassLiveElements([])}
             activeRoute={activeRoute}
-            onClearRoute={() => setActiveRoute(null)}
+            onClearRoute={() => {
+              setActiveRoute(null);
+              setSelectedMobileLineRef(null);
+              setSelectedLineSchedule(null);
+            }}
             onOpenWebcam={(cam) => setActiveWebcamModal(cam)}
             onMapReady={(map) => setMapInstance(map)}
             onSelectStationStop={handleSelectStationStopOnMap}
+          />
+
+          {/* Mobile Drag-and-Snap Transit Bottom Sheet (Citymapper / Google Maps style) */}
+          <MobileTransitBottomSheet
+            activeCity={activeCity}
+            selectedStop={selectedTransitStop}
+            selectedSchedule={selectedLineSchedule}
+            onClearStop={() => setSelectedTransitStop(null)}
+            onClearSchedule={() => handleSelectMobileLine(null)}
+            onSelectStation={(stop) => {
+              setSelectedTransitStop(stop);
+            }}
+            onFlyToStation={handleFlyToStation}
           />
         </main>
 
