@@ -173,7 +173,7 @@ export async function fetchLiveAutobahnWebcams(city: 'H' | 'HH' = 'H'): Promise<
 
   for (const road of roads) {
     try {
-      const res = await fetch(`/api/autobahn/roads/${road}/services/webcam`, { signal: AbortSignal.timeout(2500) });
+      const res = await fetch(`/api/autobahn/${road}/services/webcam`, { signal: AbortSignal.timeout(2500) });
       if (res.ok) {
         const data = await res.json();
         const items = data.webcam || [];
@@ -286,7 +286,7 @@ export async function fetchLiveAutobahnWarnings(city: 'H' | 'HH' = 'H'): Promise
 
   for (const road of roads) {
     try {
-      const res = await fetch(`/api/autobahn/roads/${road}/services/warning`, { signal: AbortSignal.timeout(2500) });
+      const res = await fetch(`/api/autobahn/${road}/services/warning`, { signal: AbortSignal.timeout(2500) });
       if (res.ok) {
         const data = await res.json();
         const items = data.warning || [];
