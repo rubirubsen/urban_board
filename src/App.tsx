@@ -22,6 +22,8 @@ import {
 } from './types';
 import { TransitLineRoute } from './data/transitRoutes';
 import { TransitStop } from './services/apiService';
+import { ALL_HANNOVER_STATIONS } from './data/hannoverStations';
+import { ALL_HAMBURG_STATIONS } from './data/hamburgStations';
 import { 
   INITIAL_GEO_MARKERS, 
   HAMBURG_GEO_MARKERS,
@@ -208,10 +210,9 @@ export const App: React.FC = () => {
   };
 
   // Select a station stop directly on the active line track on the map
-  const handleSelectStationStopOnMap = async (stopName: string, lat: number, lng: number, lineName: string) => {
+  const handleSelectStationStopOnMap = (stopName: string, lat: number, lng: number, lineName: string) => {
     let stopObj: TransitStop;
     if (activeCity === 'HH') {
-      const { ALL_HAMBURG_STATIONS } = await import('./data/hamburgStations');
       const match = ALL_HAMBURG_STATIONS.find(s => 
         s.name.toLowerCase().includes(stopName.toLowerCase()) || 
         stopName.toLowerCase().includes(s.name.toLowerCase())
@@ -224,7 +225,6 @@ export const App: React.FC = () => {
         type: lineName
       };
     } else {
-      const { ALL_HANNOVER_STATIONS } = await import('./data/hannoverStations');
       const match = ALL_HANNOVER_STATIONS.find(s => 
         s.name.toLowerCase().includes(stopName.toLowerCase()) || 
         stopName.toLowerCase().includes(s.name.toLowerCase())
@@ -258,14 +258,13 @@ export const App: React.FC = () => {
   };
 
   // Select marker and open details panel or live departures if transit
-  const handleSelectMarker = async (marker: GeoLocation | null) => {
+  const handleSelectMarker = (marker: GeoLocation | null) => {
     setSelectedMarker(marker);
     if (!marker) return;
 
     if (marker.type === 'transit') {
       let stopObj: TransitStop;
       if (activeCity === 'HH') {
-        const { ALL_HAMBURG_STATIONS } = await import('./data/hamburgStations');
         const match = ALL_HAMBURG_STATIONS.find(s => 
           s.id === marker.id ||
           s.name.toLowerCase().includes(marker.name.toLowerCase()) || 
@@ -279,7 +278,6 @@ export const App: React.FC = () => {
           type: marker.type
         };
       } else {
-        const { ALL_HANNOVER_STATIONS } = await import('./data/hannoverStations');
         const match = ALL_HANNOVER_STATIONS.find(s => 
           s.id === marker.id ||
           s.name.toLowerCase().includes(marker.name.toLowerCase()) || 

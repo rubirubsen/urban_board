@@ -50,6 +50,11 @@ export interface HvvTimetablePdf {
   size: string;
 }
 
+import { ALL_HANNOVER_STATIONS } from '../data/hannoverStations';
+import { ALL_HAMBURG_STATIONS } from '../data/hamburgStations';
+import { HANNOVER_SCHEDULES, HAMBURG_SCHEDULES } from '../data/transitSchedules';
+import { HANNOVER_TRANSIT_ROUTES, HAMBURG_TRANSIT_ROUTES } from '../data/transitRoutes';
+
 export interface LiveIoTSensor {
   id: string;
   name: string;
@@ -445,8 +450,6 @@ export async function fetchLiveDepartures(stationId: string, durationMinutes: nu
   departures: LiveDeparture[];
   stationName: string;
 }> {
-  const { ALL_HANNOVER_STATIONS } = await import('../data/hannoverStations');
-  const { ALL_HAMBURG_STATIONS } = await import('../data/hamburgStations');
   const allStations = [...ALL_HANNOVER_STATIONS, ...ALL_HAMBURG_STATIONS];
   
   // Find station by ID or match by name
@@ -532,7 +535,6 @@ export async function fetchLiveDepartures(stationId: string, durationMinutes: nu
 
   // Dynamic realistic live departures tailored to the specific station and lines
   const now = new Date();
-  const { HANNOVER_SCHEDULES, HAMBURG_SCHEDULES } = await import('../data/transitSchedules');
   const isHH = city === 'HH' || fallbackStationName.toLowerCase().includes('hamburg');
   const allSchedules = isHH ? HAMBURG_SCHEDULES : HANNOVER_SCHEDULES;
 
@@ -664,14 +666,12 @@ export async function searchTransitStops(query: string, city: 'H' | 'HH' = 'H'):
 
   const q = query.toLowerCase().trim();
   if (city === 'HH') {
-    const { ALL_HAMBURG_STATIONS } = await import('../data/hamburgStations');
     return ALL_HAMBURG_STATIONS.filter(s =>
       s.name.toLowerCase().includes(q) ||
       s.type.toLowerCase().includes(q)
     ).slice(0, 10);
   }
 
-  const { ALL_HANNOVER_STATIONS } = await import('../data/hannoverStations');
   return ALL_HANNOVER_STATIONS.filter(s => 
     s.name.toLowerCase().includes(q) ||
     s.type.toLowerCase().includes(q)
@@ -681,10 +681,8 @@ export async function searchTransitStops(query: string, city: 'H' | 'HH' = 'H'):
 // 10. Live OSM Overpass Route Track Fetcher
 export async function fetchLiveOsmLineRoute(lineRef: string, city: 'H' | 'HH' = 'H') {
   if (city === 'HH') {
-    const { HAMBURG_TRANSIT_ROUTES } = await import('../data/transitRoutes');
     return HAMBURG_TRANSIT_ROUTES[lineRef] || null;
   }
-  const { HANNOVER_TRANSIT_ROUTES } = await import('../data/transitRoutes');
   return HANNOVER_TRANSIT_ROUTES[lineRef] || null;
 }
 

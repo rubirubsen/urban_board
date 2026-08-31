@@ -4,6 +4,8 @@ import {
   fetchLiveDepartures, 
   searchTransitStops, 
   fetchLiveOsmLineRoute,
+  fetchLiveAutobahnWebcams,
+  fetchLiveAutobahnWarnings,
   DEFAULT_PINNED_STOPS_HANNOVER,
   DEFAULT_PINNED_STOPS_HAMBURG,
   LiveDeparture, 
@@ -152,10 +154,8 @@ export const TrafficFeed: React.FC<TrafficFeedProps> = ({
   const [autobahnWarnings, setAutobahnWarnings] = useState<any[]>([]);
 
   useEffect(() => {
-    import('../../services/apiService').then(({ fetchLiveAutobahnWebcams, fetchLiveAutobahnWarnings }) => {
-      fetchLiveAutobahnWebcams(activeCity).then(cams => setAutobahnWebcams(cams));
-      fetchLiveAutobahnWarnings(activeCity).then(warns => setAutobahnWarnings(warns));
-    });
+    fetchLiveAutobahnWebcams(activeCity).then(cams => setAutobahnWebcams(cams));
+    fetchLiveAutobahnWarnings(activeCity).then(warns => setAutobahnWarnings(warns));
   }, [activeCity]);
 
   const handleToggleLineRoute = async (lineName: string) => {

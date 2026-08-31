@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { HANNOVER_SCHEDULES, HAMBURG_SCHEDULES, LineSchedule, generateStationTimetable, ScheduleStopItem } from '../../data/transitSchedules';
-import { TransitLineRoute } from '../../data/transitRoutes';
+import { TransitLineRoute, HANNOVER_TRANSIT_ROUTES, HAMBURG_TRANSIT_ROUTES } from '../../data/transitRoutes';
+import { ALL_HANNOVER_STATIONS } from '../../data/hannoverStations';
+import { ALL_HAMBURG_STATIONS } from '../../data/hamburgStations';
 import { fetchHvvPdfTimetables, HvvTimetablePdf } from '../../services/apiService';
 import { 
   Route, 
@@ -92,13 +94,11 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
   };
 
   const handleDrawRouteOnMap = () => {
-    import('../../data/transitRoutes').then(({ HANNOVER_TRANSIT_ROUTES, HAMBURG_TRANSIT_ROUTES }) => {
-      const routes = isHamburg ? HAMBURG_TRANSIT_ROUTES : HANNOVER_TRANSIT_ROUTES;
-      const match = routes[activeSchedule.lineRef];
-      if (match) {
-        onSelectRoute?.(match);
-      }
-    });
+    const routes = isHamburg ? HAMBURG_TRANSIT_ROUTES : HANNOVER_TRANSIT_ROUTES;
+    const match = routes[activeSchedule.lineRef];
+    if (match) {
+      onSelectRoute?.(match);
+    }
   };
 
   const stammstreckenOptions = isHamburg
@@ -296,10 +296,9 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
               const isDestination = idx === activeDir.stops.length - 1;
               const isSelected = activeStationName === stop.stopName;
 
-              const handleStopClick = async () => {
+              const handleStopClick = () => {
                 setActiveStationName(stop.stopName);
                 if (isHamburg) {
-                  const { ALL_HAMBURG_STATIONS } = await import('../../data/hamburgStations');
                   const match = ALL_HAMBURG_STATIONS.find(s => 
                     s.name.toLowerCase().includes(stop.stopName.toLowerCase()) ||
                     stop.stopName.toLowerCase().includes(s.name.toLowerCase())
@@ -318,7 +317,6 @@ export const TransitScheduleHub: React.FC<TransitScheduleHubProps> = ({
                     onSelectStationForLiveDepartures?.(fallbackStop);
                   }
                 } else {
-                  const { ALL_HANNOVER_STATIONS } = await import('../../data/hannoverStations');
                   const match = ALL_HANNOVER_STATIONS.find(s => 
                     s.name.toLowerCase().includes(stop.stopName.toLowerCase()) ||
                     stop.stopName.toLowerCase().includes(s.name.toLowerCase())
